@@ -24,7 +24,11 @@ void Game::update()
 
 void Game::render()
 {
-   
+	SDL_RenderClear(renderer);
+
+	bg->render();
+
+	SDL_RenderPresent(renderer);
 }
 
 void Game::pollEventWindow()
@@ -124,6 +128,12 @@ bool Game::initWindow()
 	}
 	SDL_SetWindowIcon(window, icon);
 
+	bg = std::unique_ptr<BG>(new BG{ renderer });
+	if (!bg->isEmpty())
+	{
+		std::cout << "BG ERRoR: \n" << std::endl;
+		return false;
+	}
 
 	showCursor(true);
 

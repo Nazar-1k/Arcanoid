@@ -1,10 +1,10 @@
 #pragma once
 
-#include <SDL.h>
-#include <SDL_image.h>
+#include "BG.h"
+
 #include <SDL_ttf.h>
 #include <SDL_mixer.h>
-#include <iostream>
+
 
 
 class Game
@@ -28,7 +28,7 @@ private:
 	bool initWindow();
 	bool initeObject();
 
-#pragma region Window
+	#pragma region Window
 
 	int SCREEN_WIDTH;
 	int SCREEN_HEIGHT;
@@ -46,6 +46,12 @@ private:
 	SDL_Surface* icon;
 
 #pragma endregion
+
+	#pragma region Object
+
+		std::unique_ptr<BG> bg;
+
+	#pragma endregion
 
 };
 
