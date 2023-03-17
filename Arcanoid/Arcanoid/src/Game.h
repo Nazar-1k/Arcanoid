@@ -1,6 +1,7 @@
 #pragma once
 
 #include "BG.h"
+#include "Cursor.h"
 
 #include <SDL_ttf.h>
 #include <SDL_mixer.h>
@@ -44,12 +45,13 @@ private:
 	SDL_Renderer* renderer;
 
 	SDL_Surface* icon;
+	std::unique_ptr<Cursor> cursor;
 
 #pragma endregion
 
 	#pragma region Object
 
-		std::unique_ptr<BG> bg;
+	std::unique_ptr<BG> bg;
 
 	#pragma endregion
 

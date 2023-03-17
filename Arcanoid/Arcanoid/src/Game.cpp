@@ -28,6 +28,10 @@ void Game::render()
 
 	bg->render();
 
+
+
+	cursor->render(SCREEN_WIDTH, SCREEN_HEIGHT);
+
 	SDL_RenderPresent(renderer);
 }
 
@@ -38,6 +42,8 @@ void Game::pollEventWindow()
         //User requests quit
         if (e.type == SDL_QUIT)
             quit = true;
+
+		cursor->PoolEvent(e);
     }
 }
 
@@ -135,7 +141,15 @@ bool Game::initWindow()
 		return false;
 	}
 
-	showCursor(true);
+
+	cursor = std::unique_ptr<Cursor>(new Cursor{ renderer });
+	if (!cursor->isEmpty())
+	{
+		std::cout << "Cursor ERRoR: \n" << std::endl;
+		return false;
+	}
+
+	showCursor(false);
 
 	return true;
 }
