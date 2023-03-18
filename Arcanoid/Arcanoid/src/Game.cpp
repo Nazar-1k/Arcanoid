@@ -62,17 +62,17 @@ void Game::run()
 	{
 		while (!quit)
 		{
-		/*	fpsTimer.start();*/
+			fpsTimer.start();
 
 			pollEventWindow();
 			update();
 			render();
 
-			//if (frameDelay > static_cast<int>(fpsTimer.getTicks()))
-			//{
-			//	//Wait remaining time
-			//	SDL_Delay(frameDelay - fpsTimer.getTicks());
-			//}
+			if (frameDelay > static_cast<int>(fpsTimer.getTicks()))
+			{
+				//Wait remaining time
+				SDL_Delay(frameDelay - fpsTimer.getTicks());
+			}
 		}
 	}
 }

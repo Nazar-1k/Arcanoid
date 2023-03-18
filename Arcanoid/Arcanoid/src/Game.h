@@ -2,6 +2,7 @@
 
 #include "BG.h"
 #include "Cursor.h"
+#include "Timer.h"
 
 #include <SDL_ttf.h>
 #include <SDL_mixer.h>
@@ -34,9 +35,10 @@ private:
 	int SCREEN_WIDTH;
 	int SCREEN_HEIGHT;
 
-	const int FPS = 60;
+	const int FPS = 100;
 	const int frameDelay = 1000 / FPS;
-	
+
+	Timer fpsTimer;
 
 	bool quit;
 	SDL_Event e;
