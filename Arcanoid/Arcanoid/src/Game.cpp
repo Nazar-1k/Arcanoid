@@ -1,8 +1,11 @@
 #include "Game.h"
 
 Game::Game()
-    :SCREEN_WIDTH(700), SCREEN_HEIGHT(800), quit(false),
-    window(nullptr), renderer(nullptr), icon(nullptr), e()
+	:SCREEN_WIDTH(700), SCREEN_HEIGHT(800), quit(false),
+	window(nullptr), renderer(nullptr), icon(nullptr), e(),
+	MenuBG{ 0,0,0,0 },
+	start(false), stop(true), gameOver(false),
+	score_points(0)
 {
 }
 
@@ -13,7 +16,7 @@ Game::~Game()
 
 bool Game::init()
 {
-    if (!initWindow() or !initeObject())
+    if (!initWindow() or !initeObject() or !initButton() or !initeText() or !initUI())
         return false;
     return true;
 }
@@ -28,7 +31,13 @@ void Game::render()
 
 	bg->render();
 
+	renderStartText();
 
+	if (!stop or start)
+	{
+		renderUI();
+		renderStopMenu();
+	}
 
 	cursor->render(SCREEN_WIDTH, SCREEN_HEIGHT);
 
@@ -42,6 +51,8 @@ void Game::pollEventWindow()
         //User requests quit
         if (e.type == SDL_QUIT)
             quit = true;
+
+		pollEventButton();
 
 		cursor->PoolEvent(e);
     }
@@ -157,4 +168,157 @@ bool Game::initWindow()
 bool Game::initeObject()
 {
     return true;
+}
+
+bool Game::initeText()
+{
+	startText = std::unique_ptr<Text>(new Text(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, renderer, "Press any key:", 45, { 250, 118, 206, 100 }));
+
+	PauseText = std::unique_ptr<Text>(new Text{ SCREEN_WIDTH / 2, MenuBG.y + 100, renderer, "Pause", 50, { 250, 118, 206, 255 } });
+
+	GameOverText = std::unique_ptr<Text>(new Text{ SCREEN_WIDTH / 2, MenuBG.y + 100, renderer, "Game Over", 60, { 250, 150, 150, 255 } });
+
+	if (!startText or !PauseText)
+		return false;
+	return true;
+}
+
+bool Game::initButton()
+{
+	MenuBG = { SCREEN_WIDTH / 6 ,  SCREEN_HEIGHT / 6, SCREEN_WIDTH - SCREEN_WIDTH / 3 ,SCREEN_HEIGHT - SCREEN_HEIGHT / 3 };
+
+	UnPauseButton = std::unique_ptr<Button>(new Button{ renderer, 1, 1, "data/Menu/stop.png" });
+	UnPauseButton->setPosition(SCREEN_WIDTH / 2 - 100, SCREEN_HEIGHT / 2 + 50);
+	UnPauseButton->setColor(250, 118, 206);
+	
+
+	RestartButton = std::unique_ptr<Button>(new Button{ renderer, 1, 1, "data/Menu/restart.png" });
+	RestartButton->setPosition(SCREEN_WIDTH / 2 + 100, SCREEN_HEIGHT / 2 + 50);
+	RestartButton->setColor(250, 118, 206);
+
+	if (!UnPauseButton or !RestartButton)
+		return false;
+	return true;
+}
+
+bool Game::initUI()
+{
+	stopButton = std::unique_ptr<Button>(new Button{ renderer, 1, 1, "data/Menu/stop.png" });
+	stopButton->setPosition(SCREEN_WIDTH -10 , 50);
+	stopButton->setColor(250, 118, 206);
+	stopButton->setSize(50);
+
+	scoreText = std::unique_ptr<Text>(new Text(1, 1, renderer, "Score", 30, { 250, 118, 206, 255 }));
+	scoreText->setPosition(SCREEN_WIDTH - stopButton->getWidth() - scoreText->getWidth(), 25);
+
+	heart = std::unique_ptr<Sprite>(new Sprite{ "data/Heart/Heart.png", renderer });
+
+	heart->setX(static_cast<float>(heart->getWidth() + 50));
+	heart->setY(static_cast<float>(heart->getHeight() + 50));
+
+	if (!stopButton or !scoreText or !heart)
+	{
+		return false;
+	}
+	return true;
+}
+
+void Game::renderStartText()
+{
+	if (!start)
+	{
+		if (gameOver)
+		{
+			GameOverText->draw();
+		}
+
+		startText->draw();
+		startText->setAlpha(animationAlfa);
+
+		if (animationAlfa == 0)
+			animationAlfa = 255;
+		else
+			animationAlfa -= 3;
+
+	}
+}
+
+void  Game::renderUI()
+{
+	scoreText->SetText("Score: " + std::to_string(score_points));
+	scoreText->draw();
+
+	stopButton->draw();
+
+	int life = 3;
+	if (life >= 1)
+	{
+		heart->setX(10);
+		heart->setY(10);
+		heart->render();
+	}
+
+	if (life >= 2)
+	{
+		heart->setX(heart->getX() + heart->getWidth());
+		heart->render();
+	}
+
+
+	if (life == 3)
+	{
+
+		heart->setX(heart->getX() + heart->getWidth());
+		heart->render();
+	}
+}
+
+void Game::renderStopMenu()
+{
+	if (stop)
+	{
+		SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
+		SDL_SetRenderDrawColor(renderer, 23, 8, 18, static_cast<Uint8>(255));
+		SDL_RenderFillRect(renderer, &MenuBG);
+
+		PauseText->draw();
+
+		UnPauseButton->draw();
+		RestartButton->draw();
+	}
+}
+
+void Game::pollEventButton()
+{
+	if ((e.type == SDL_KEYDOWN or e.type == SDL_MOUSEBUTTONDOWN) and !start)
+	{
+		start = true;
+		stop = false;
+	}
+
+	if (stop and e.key.keysym.sym == SDLK_ESCAPE)
+		stop = false;
+	
+	UnPauseButton->handleEvent(e, cursor->getX(), cursor->getY());
+	if (UnPauseButton->isPressed())
+		stop = false;
+
+	RestartButton->handleEvent(e, cursor->getX(), cursor->getY());
+	if (RestartButton->isPressed())
+		restartGame();
+
+	stopButton->handleEvent(e, cursor->getX(), cursor->getY());
+	if (stopButton->isPressed())
+	{
+		if (stop)
+			stop = false;
+		else
+			stop = true;
+	}
+}
+
+void Game::restartGame()
+{
+	start = false;
+	stop = true;
 }
