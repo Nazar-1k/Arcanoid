@@ -5,6 +5,7 @@
 #include "Timer.h"
 #include "Button.h"
 #include "Text.h"
+#include "Platform.h"
 
 #include <SDL_mixer.h>
 
@@ -32,6 +33,8 @@ private:
 	bool initWindow();
 	bool initeObject();
 
+	bool initPlatform();
+
 	bool initeText();
 	bool initButton();
 
@@ -54,7 +57,7 @@ private:
 		int SCREEN_WIDTH;
 		int SCREEN_HEIGHT;
 
-		const int FPS = 100;
+		const int FPS;
 		const int frameDelay = 1000 / FPS;
 
 		Timer fpsTimer;
@@ -74,6 +77,7 @@ private:
 
 		std::unique_ptr<BG> bg;
 
+		std::unique_ptr<Platform> platform;
 
 
 	#pragma endregion

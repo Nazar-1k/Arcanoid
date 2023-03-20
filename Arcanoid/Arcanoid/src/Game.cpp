@@ -1,7 +1,8 @@
 #include "Game.h"
 
 Game::Game()
-	:SCREEN_WIDTH(700), SCREEN_HEIGHT(800), quit(false),
+	:FPS(100),
+	SCREEN_WIDTH(700), SCREEN_HEIGHT(800), quit(false),
 	window(nullptr), renderer(nullptr), icon(nullptr), e(),
 	MenuBG{ 0,0,0,0 },
 	start(false), stop(true), gameOver(false),
@@ -23,6 +24,11 @@ bool Game::init()
 
 void Game::update()
 {
+	if (!stop or start)
+	{
+		platform->update(SCREEN_WIDTH, SCREEN_HEIGHT);
+	}
+
 }
 
 void Game::render()
@@ -35,6 +41,9 @@ void Game::render()
 
 	if (!stop or start)
 	{
+		platform->render();
+
+
 		renderUI();
 		renderStopMenu();
 	}
@@ -52,8 +61,9 @@ void Game::pollEventWindow()
         if (e.type == SDL_QUIT)
             quit = true;
 
+		platform->poolEvent(e);
+		
 		pollEventButton();
-
 		cursor->PoolEvent(e);
     }
 }
@@ -167,7 +177,22 @@ bool Game::initWindow()
 
 bool Game::initeObject()
 {
+	if (!initPlatform())
+	{
+		return false;
+	}
     return true;
+}
+
+bool Game::initPlatform()
+{
+	platform = std::unique_ptr<Platform>(new Platform{ renderer });
+
+	if (!platform)
+	{
+		return false;
+	}
+	return true;
 }
 
 bool Game::initeText()

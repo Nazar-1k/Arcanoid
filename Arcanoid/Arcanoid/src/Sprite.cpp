@@ -4,6 +4,8 @@ Sprite::Sprite(const char* path, SDL_Renderer* renderer)
 	: renderer(renderer)
 {
 	loadFromFile(path);
+	/*x -= width/2;
+	y -= height/2;*/
 }
 
 Sprite::~Sprite()
@@ -92,6 +94,19 @@ void Sprite::render(SDL_Rect* clip, double angle, SDL_Point* center, SDL_Rendere
 	//Render to screen
 	SDL_RenderCopyEx(renderer, texture, clip, &renderQuad, angle, center, flip);
 }
+void Sprite::render(int a)
+{
+	//Set rendering space and render to screen
+	SDL_Rect renderQuad = { static_cast<int>(x - width / 2),  static_cast<int>(y - height / 2), width, height };
+
+	float fx, fy;
+	
+	//Render to screen   
+	SDL_RenderCopy(renderer, texture, NULL, &renderQuad);
+	
+}
+
+
 
 void Sprite::getSize(int& w, int& h)
 {
@@ -133,10 +148,11 @@ void Sprite::free()
 {
 	if (texture)
 	{
-		SDL_DestroyTexture(texture);
 		texture = nullptr;
 		renderer = nullptr;
 		width = 0;
 		height = 0;
+
+		SDL_DestroyTexture(texture);
 	}
 }
