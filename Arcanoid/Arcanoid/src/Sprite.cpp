@@ -94,7 +94,7 @@ void Sprite::render(SDL_Rect* clip, double angle, SDL_Point* center, SDL_Rendere
 	//Render to screen
 	SDL_RenderCopyEx(renderer, texture, clip, &renderQuad, angle, center, flip);
 }
-void Sprite::render(int a)
+void Sprite::render_()
 {
 	//Set rendering space and render to screen
 	SDL_Rect renderQuad = { static_cast<int>(x - width / 2),  static_cast<int>(y - height / 2), width, height };

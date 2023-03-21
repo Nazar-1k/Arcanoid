@@ -9,7 +9,7 @@
 
 #include <SDL_mixer.h>
 
-
+#include "ArrayBlocks.h"
 
 
 class Game
@@ -78,6 +78,7 @@ private:
 		std::unique_ptr<BG> bg;
 
 		std::unique_ptr<Platform> platform;
+		std::unique_ptr <ArrayBlocks> blocks;
 
 
 	#pragma endregion
@@ -116,6 +117,7 @@ private:
 		bool gameOver;
 
 	#pragma endregion
+
 
 };
 

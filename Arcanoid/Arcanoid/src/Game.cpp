@@ -17,8 +17,11 @@ Game::~Game()
 
 bool Game::init()
 {
+
+	
     if (!initWindow() or !initeObject() or !initButton() or !initeText() or !initUI())
         return false;
+	
     return true;
 }
 
@@ -36,13 +39,12 @@ void Game::render()
 	SDL_RenderClear(renderer);
 
 	bg->render();
-
 	renderStartText();
 
 	if (!stop or start)
 	{
 		platform->render();
-
+		blocks->draw();
 
 		renderUI();
 		renderStopMenu();
@@ -178,9 +180,12 @@ bool Game::initWindow()
 bool Game::initeObject()
 {
 	if (!initPlatform())
-	{
 		return false;
-	}
+
+	blocks = std::unique_ptr<ArrayBlocks>(new ArrayBlocks{ renderer,1 });
+	if (!blocks)
+		return false;
+
     return true;
 }
 

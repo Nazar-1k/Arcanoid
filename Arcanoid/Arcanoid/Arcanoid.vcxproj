@@ -19,6 +19,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\ArrayBlocks.cpp" />
+    <ClCompile Include="src\Block.cpp" />
     <ClCompile Include="src\Platform.cpp" />
     <ClCompile Include="src\Button.cpp" />
     <ClCompile Include="src\Cursor.cpp" />
@@ -30,6 +32,8 @@
     <ClCompile Include="src\Text.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\ArrayBlocks.h" />
+    <ClInclude Include="src\Block.h" />
     <ClInclude Include="src\Platform.h" />
     <ClInclude Include="src\Button.h" />
     <ClInclude Include="src\Cursor.h" />

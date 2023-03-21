@@ -15,11 +15,13 @@ public:
 
 	void render();
 
+	void setMode(int mode);
+
 private:
 	void setPosition();
 	void setRect();
-	int getWidthP();
-	int getHeightP();
+	int getWidthP() const;
+	int getHeightP() const;
 
 	float x, y;
 	SDL_Renderer* renderer;

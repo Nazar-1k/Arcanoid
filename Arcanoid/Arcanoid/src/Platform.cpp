@@ -20,7 +20,7 @@ static const char pathShotPlatform3[] = "data/GamePlatform/ShotPlatform(frame3).
 
 Platform::Platform(SDL_Renderer* renderer)
 	:x(350), y(750), m_rect({0,0,0,0}),
-    platformMode(1), renderer(renderer)
+    platformMode(0), renderer(renderer)
 {
 	//Default Platform
 	m_defaultPlatform[0] = new Sprite{ pathFrame1, renderer };
@@ -57,9 +57,6 @@ Platform::~Platform()
 
 void Platform::update(int S_width, int S_height)
 {
-    
-    
-
     if (keyLeft and x > this->getWidthP() / 2 )
         x -= speedPlatform;
     
@@ -80,7 +77,6 @@ void Platform::poolEvent(SDL_Event& e)
         switch (e.key.keysym.sym)
         {
         case SDLK_LEFT:
-           
             keyLeft = true;
             break;
         case SDLK_RIGHT:
@@ -105,6 +101,11 @@ void Platform::poolEvent(SDL_Event& e)
     }
     break;
     }
+}
+
+void Platform::setMode(int mode)
+{
+    platformMode = mode;
 }
 
 void Platform::setPosition()
@@ -159,7 +160,7 @@ void Platform::setRect()
     }
 }
 
-int Platform::getWidthP()
+int Platform::getWidthP() const
 {
     switch (platformMode)
     {
@@ -178,9 +179,10 @@ int Platform::getWidthP()
     default:
         break;
     }
+    return 0;
 }
 
-int Platform::getHeightP()
+int Platform::getHeightP() const
 {
     switch (platformMode)
     {
@@ -199,6 +201,7 @@ int Platform::getHeightP()
     default:
         break;
     }
+    return 0;
 }
 
 void Platform::render()
@@ -206,16 +209,16 @@ void Platform::render()
     switch (platformMode)
     {
     case 0:
-        m_defaultPlatform[frame]->render(1);
+        m_defaultPlatform[frame]->render_();
         break;
     case 1:
-        m_longPlatform->render(1);
+        m_longPlatform->render_();
         break;
     case 2:
-        m_shortPlatform->render(1);
+        m_shortPlatform->render_();
         break;
     case 3:
-        m_ShotPlatform[frame]->render(1);
+        m_ShotPlatform[frame]->render_();
         break;
     default:
         break;
@@ -231,7 +234,7 @@ void Platform::render()
             frame = 0;
     }
 
-    /*SDL_RenderFillRect(renderer, &m_rect);*/
+   /* SDL_RenderFillRect(renderer, &m_rect);*/
 }
 
 
