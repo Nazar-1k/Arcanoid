@@ -1,38 +1,38 @@
 #include "ArrayBlocks.h"
 
-ArrayBlocks::ArrayBlocks(SDL_Renderer* renderer, int countBlock)
+ArrayBlocks::ArrayBlocks(float x, float y, int countRow, int  countColumn, SDL_Renderer* renderer)
 	:renderer(renderer),
-	countBlock(countBlock),
 	height(0), width(0),
-	x(110), y(100)
-{	
-	for (size_t i = 0; i < countBlock; i++)
-	{
-		Blocks.push_back(new Block{ renderer, x, y });
-		
-		if (height == 0 or width == 0)
-		{
-			Blocks[0]->getSize(width, height);
-		}
+	x(x), y(y)
+{
+	Blocks.push_back(new Block{ renderer, x, y });
+	Blocks[0]->getSize(width, height);
+	Blocks.pop_back();
 
-		x += width;
-		if (x == width * 8 + 110)
-		{
-			x = 110;
-			y += height;
-		}
-		
-	}
-
-
+	AddBlocks(x, y, countRow, countColumn);
 }
 
 ArrayBlocks::~ArrayBlocks()
 {
-	for (int i = Blocks.size() - 1; i >= 0; i--)
+	deleteAllBlocks();
+}
+
+void ArrayBlocks::AddBlocks(float x, float y, int countRow, int countColumn)
+{
+	int StartX = x;
+
+	for (size_t i = 0; i < countColumn; i++)
 	{
-		delete Blocks[i];
-		Blocks.pop_back();
+		for (size_t j = 0; j < countRow; j++)
+		{
+			Blocks.push_back(new Block{ renderer, x, y });
+
+			x += width;
+
+			if (x == width * countRow + StartX)
+				x = StartX;
+		}
+		y += height;
 	}
 }
 
@@ -41,5 +41,14 @@ void ArrayBlocks::draw()
 	for (auto& block : Blocks)
 	{
 		block->draw();
+	}
+}
+
+void ArrayBlocks::deleteAllBlocks()
+{
+	for (int i = Blocks.size() - 1; i >= 0; i--)
+	{
+		delete Blocks[i];
+		Blocks.pop_back();
 	}
 }

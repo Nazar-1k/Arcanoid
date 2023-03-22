@@ -6,8 +6,11 @@
 class ArrayBlocks
 {
 public:
-	ArrayBlocks(SDL_Renderer* renderer, int countBlock = 40);
+	ArrayBlocks(float x, float y, int countRow, int  countColumn, SDL_Renderer* renderer);
 	~ArrayBlocks();
+
+	void AddBlocks(float x, float y, int countRow, int  countColumn);
+	void deleteAllBlocks();
 
 	void draw();
 private:
@@ -15,7 +18,6 @@ private:
 	std::vector<Block*> Blocks;
 	float x, y;
 
-	int countBlock;
 	int width;
 	int height;
 };

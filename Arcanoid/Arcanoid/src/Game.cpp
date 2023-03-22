@@ -6,7 +6,8 @@ Game::Game()
 	window(nullptr), renderer(nullptr), icon(nullptr), e(),
 	MenuBG{ 0,0,0,0 },
 	start(false), stop(true), gameOver(false),
-	score_points(0)
+	score_points(0),
+	level(1)
 {
 }
 
@@ -100,6 +101,41 @@ void Game::run()
 	}
 }
 
+void Game::initLevel(int level)
+{
+	switch (level)
+	{
+	case 1:
+		blocks = std::unique_ptr<ArrayBlocks>(new ArrayBlocks{ 110, 100 , 8, 2, renderer });
+		break;
+	case 2:
+		blocks = std::unique_ptr<ArrayBlocks>(new ArrayBlocks{ 110, 100 , 8, 4,  renderer });
+		break;
+	case 3:
+		blocks = std::unique_ptr<ArrayBlocks>(new ArrayBlocks{ 110, 100 , 1, 6,  renderer });
+		blocks->AddBlocks(190, 100, 6, 4);
+		blocks->AddBlocks(670, 100, 1, 6);
+		break;
+	case 4:
+		break;
+	case 5:
+		break;
+	case 6:
+		break;
+	case 7:
+		break;
+	case 8:
+		break;
+	case 9:
+		break;
+	case 10:
+		break;
+	default:
+		break;
+	}
+}
+
+
 void Game::close()
 {
     //Destroy window
@@ -158,7 +194,7 @@ bool Game::initWindow()
 	SDL_SetWindowIcon(window, icon);
 
 	bg = std::unique_ptr<BG>(new BG{ renderer });
-	if (!bg->isEmpty())
+	if (!bg.get())
 	{
 		std::cout << "BG ERRoR: \n" << std::endl;
 		return false;
@@ -166,7 +202,7 @@ bool Game::initWindow()
 
 
 	cursor = std::unique_ptr<Cursor>(new Cursor{ renderer });
-	if (!cursor->isEmpty())
+	if (!cursor.get())
 	{
 		std::cout << "Cursor ERRoR: \n" << std::endl;
 		return false;
@@ -182,8 +218,8 @@ bool Game::initeObject()
 	if (!initPlatform())
 		return false;
 
-	blocks = std::unique_ptr<ArrayBlocks>(new ArrayBlocks{ renderer,1 });
-	if (!blocks)
+	initLevel(3);
+	if (!blocks.get())
 		return false;
 
     return true;
@@ -193,7 +229,7 @@ bool Game::initPlatform()
 {
 	platform = std::unique_ptr<Platform>(new Platform{ renderer });
 
-	if (!platform)
+	if (!platform.get())
 	{
 		return false;
 	}
@@ -351,4 +387,9 @@ void Game::restartGame()
 {
 	start = false;
 	stop = true;
+}
+
+void Game::deleteObject()
+{
+	blocks->deleteAllBlocks();
 }

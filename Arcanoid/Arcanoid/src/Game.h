@@ -29,6 +29,8 @@ public:
 
 	void run();
 
+	void initLevel(int level);
+
 private:
 	bool initWindow();
 	bool initeObject();
@@ -42,15 +44,13 @@ private:
 
 	void renderStartText();
 	
-
 	void renderUI();
 	void renderStopMenu();
 
 	void pollEventButton();
 
-
-
 	void restartGame();
+	void deleteObject();
 
 	#pragma region Window
 
@@ -78,6 +78,8 @@ private:
 		std::unique_ptr<BG> bg;
 
 		std::unique_ptr<Platform> platform;
+
+		int level;
 		std::unique_ptr <ArrayBlocks> blocks;
 
 
