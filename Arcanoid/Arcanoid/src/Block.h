@@ -1,23 +1,37 @@
 #pragma once
 
 #include "Sprite.h"
+#include <vector>
 
 class Block
 {
 public:
 	Block(SDL_Renderer* renderer, float x, float y);
 	Block(SDL_Renderer* renderer, float x, float y, int color);
-	~Block();
+	virtual ~Block();
 
 	void draw();
 	
 	bool checkColision(float x, float y, int radius);
 
-	void getSize(int& width, int& height);
+	void getSize(int& width, int& height) const;
+	int getWidth() const { return  BlockSprite[0]->getWidth(); }
+	int getHeight() const { return BlockSprite[0]->getHeight(); }
+	
+	
+	int getRectY() { return m_rect.y; }
 
-private:
+	float getX() const { return x; }
+	float getY() const { return y; }
+
+
+protected:
 	void initBlock();
 
+	void setX(float x)
+	{
+		this->x = x;
+	}
 
 	float x, y;
 	//Colors:

@@ -9,6 +9,7 @@
 
 #include <SDL_mixer.h>
 
+#include "MoveBlock.h"
 #include "ArrayBlocks.h"
 
 
@@ -81,6 +82,7 @@ private:
 
 		int level;
 		std::unique_ptr <ArrayBlocks> blocks;
+		std::vector<std::unique_ptr <MoveBlock>> moveBlocks;
 
 
 	#pragma endregion

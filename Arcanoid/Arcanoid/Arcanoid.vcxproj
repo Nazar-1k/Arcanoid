@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClCompile Include="src\ArrayBlocks.cpp" />
     <ClCompile Include="src\Block.cpp" />
+    <ClCompile Include="src\MoveBlock.cpp" />
     <ClCompile Include="src\Platform.cpp" />
     <ClCompile Include="src\Button.cpp" />
     <ClCompile Include="src\Cursor.cpp" />
@@ -32,6 +33,7 @@
     <ClCompile Include="src\Text.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\MoveBlock.h" />
     <ClInclude Include="src\ArrayBlocks.h" />
     <ClInclude Include="src\Block.h" />
     <ClInclude Include="src\Platform.h" />

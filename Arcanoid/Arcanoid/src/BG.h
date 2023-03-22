@@ -6,7 +6,7 @@ class BG : public Sprite
 {
 public:
 	BG(SDL_Renderer* renderer);
-	~BG() {}
+	~BG(){}
 
 	void render() const;
 };

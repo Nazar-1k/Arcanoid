@@ -98,12 +98,19 @@ void Sprite::render_()
 {
 	//Set rendering space and render to screen
 	SDL_Rect renderQuad = { static_cast<int>(x - width / 2),  static_cast<int>(y - height / 2), width, height };
-
-	float fx, fy;
 	
 	//Render to screen   
 	SDL_RenderCopy(renderer, texture, NULL, &renderQuad);
 	
+}
+void Sprite::render_(float x, float y)
+{
+	//Set rendering space and render to screen
+	SDL_Rect renderQuad = { static_cast<int>(x - width / 2),  static_cast<int>(y - height / 2), width, height };
+
+	//Render to screen   
+	SDL_RenderCopy(renderer, texture, NULL, &renderQuad);
+
 }
 
 
@@ -154,5 +161,6 @@ void Sprite::free()
 		height = 0;
 
 		SDL_DestroyTexture(texture);
+		SDL_DestroyRenderer(renderer);
 	}
 }

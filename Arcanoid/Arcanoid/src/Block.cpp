@@ -65,11 +65,14 @@ Block::Block(SDL_Renderer* renderer, float x, float y, int color)
 Block::~Block()
 {
 	//default Platform
-	for (int i = 0; i < 2; i++)
-		delete BlockSprite[i];
+	delete BlockSprite[0];
+	delete BlockSprite[1];		
+				
+	SDL_DestroyRenderer(renderer);
+	renderer = nullptr;
 }
 
-void Block::getSize(int& width, int& height)
+void Block::getSize(int& width, int& height) const
 {
 	width = BlockSprite[0]->getWidth();
 	height = BlockSprite[0]->getHeight();
@@ -117,17 +120,17 @@ void Block::initBlock()
 	case 7:
 		//PurpleBlock
 		BlockSprite[0] = new Sprite{ pathPurpleBlock, renderer };
-		BlockSprite[1] = new Sprite{ pathPurpleBlock, renderer };
+		BlockSprite[1] = new Sprite{ pathCrackPurpleBlock, renderer };
 		break;
 	case 8:
 		//RedBlock
 		BlockSprite[0] = new Sprite{ pathRedBlock, renderer };
-		BlockSprite[1] = new Sprite{ pathRedBlock, renderer };
+		BlockSprite[1] = new Sprite{ pathCrackRedBlock, renderer };
 		break;
 	case 9:
 		//YellowBlock
 		BlockSprite[0] = new Sprite{ pathYellowBlock, renderer };
-		BlockSprite[1] = new Sprite{ pathYellowBlock, renderer };
+		BlockSprite[1] = new Sprite{ pathCrackYellowBlock, renderer };
 		break;
 
 	default:

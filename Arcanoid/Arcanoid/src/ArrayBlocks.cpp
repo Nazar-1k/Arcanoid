@@ -15,11 +15,14 @@ ArrayBlocks::ArrayBlocks(float x, float y, int countRow, int  countColumn, SDL_R
 ArrayBlocks::~ArrayBlocks()
 {
 	deleteAllBlocks();
+
+	SDL_DestroyRenderer(renderer);
+	renderer = nullptr;
 }
 
 void ArrayBlocks::AddBlocks(float x, float y, int countRow, int countColumn)
 {
-	int StartX = x;
+	float StartX = x;
 
 	for (size_t i = 0; i < countColumn; i++)
 	{

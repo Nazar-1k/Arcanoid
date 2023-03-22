@@ -1,7 +1,5 @@
 #pragma once
 
-#include <vector>
-
 #include "Block.h"
 class ArrayBlocks
 {
@@ -13,6 +11,7 @@ public:
 	void deleteAllBlocks();
 
 	void draw();
+	std::vector<Block*> getVector() { return Blocks; }
 private:
 	SDL_Renderer* renderer;
 	std::vector<Block*> Blocks;

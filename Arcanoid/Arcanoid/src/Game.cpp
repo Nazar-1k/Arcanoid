@@ -31,6 +31,40 @@ void Game::update()
 	if (!stop or start)
 	{
 		platform->update(SCREEN_WIDTH, SCREEN_HEIGHT);
+	
+		for (auto& moveBlock : moveBlocks)
+		{
+			moveBlock->update(SCREEN_WIDTH);
+
+			for(auto& block: blocks->getVector())
+				if (moveBlock->checkColisionBlock(block->getX(), block->getRectY(), block->getWidth(), block->getHeight()))
+				{
+					moveBlock->setSpeedDirection();
+				}
+		}
+
+		for (auto& moveBlock1 : moveBlocks)
+			for (auto& moveBlock2 : moveBlocks)
+				if (moveBlock1 != moveBlock2)
+					if (!moveBlock1->checkColisionBlock(*moveBlock2))
+						moveBlock1->setSpeedDirection();
+			
+		
+		
+
+
+
+		/*for (auto i = moveBlocks.begin(); i < moveBlocks.end() - 1; i++)
+		{
+			for (auto j = moveBlocks.begin() + 1; j < moveBlocks.end(); j++)
+			{
+				if (moveBlocks[i]->checkColisionBlock(moveBlocks[j]))
+				{
+					moveBlocks->setSpeedDirection();
+				}
+
+			}
+		}*/
 	}
 
 }
@@ -46,6 +80,11 @@ void Game::render()
 	{
 		platform->render();
 		blocks->draw();
+		
+		for (auto& block : moveBlocks)
+		{
+			block->draw();
+		}
 
 		renderUI();
 		renderStopMenu();
@@ -115,20 +154,79 @@ void Game::initLevel(int level)
 		blocks = std::unique_ptr<ArrayBlocks>(new ArrayBlocks{ 110, 100 , 1, 6,  renderer });
 		blocks->AddBlocks(190, 100, 6, 4);
 		blocks->AddBlocks(670, 100, 1, 6);
+		moveBlocks.push_back(std::unique_ptr<MoveBlock>(new MoveBlock{  renderer, static_cast<float>(SCREEN_WIDTH / 2), 249 }));
+
 		break;
 	case 4:
+		blocks = std::unique_ptr<ArrayBlocks>(new ArrayBlocks{ 110, 100 , 1, 6,  renderer });
+		blocks->AddBlocks(190, 100, 6, 4);
+		blocks->AddBlocks(670, 100, 1, 6);
+		moveBlocks.push_back(std::unique_ptr<MoveBlock>(new MoveBlock{ renderer, static_cast<float>(SCREEN_WIDTH / 2), 249 }));
+		blocks->AddBlocks(110, 262, 8, 1);
 		break;
 	case 5:
+		blocks = std::unique_ptr<ArrayBlocks>(new ArrayBlocks{ 110, 100 , 2, 10,  renderer });
+		blocks->AddBlocks(590, 100, 2, 10);
 		break;
 	case 6:
+		blocks = std::unique_ptr<ArrayBlocks>(new ArrayBlocks{ 110, 100 , 2, 10,  renderer });
+		moveBlocks.push_back(std::unique_ptr<MoveBlock>(new MoveBlock{ renderer, static_cast<float>(SCREEN_WIDTH / 2), 249 }));
+		blocks->AddBlocks(590, 100, 2, 10);
 		break;
 	case 7:
+		blocks = std::unique_ptr<ArrayBlocks>(new ArrayBlocks{ 110, 100 , 2, 10,  renderer });
+		
+		moveBlocks.push_back(std::unique_ptr<MoveBlock>(new MoveBlock{ renderer, static_cast<float>(SCREEN_WIDTH / 2)-50, 141 }));
+		moveBlocks.push_back(std::unique_ptr<MoveBlock>(new MoveBlock{ renderer, static_cast<float>(SCREEN_WIDTH / 2)+50, 249 }));
+		moveBlocks.push_back(std::unique_ptr<MoveBlock>(new MoveBlock{ renderer, static_cast<float>(SCREEN_WIDTH / 2) + 100, 357 }));
+		
+		blocks->AddBlocks(590, 100, 2, 10);
+
 		break;
 	case 8:
+		blocks = std::unique_ptr<ArrayBlocks>(new ArrayBlocks{ 110, 100 , 2, 10,  renderer });
+		blocks->AddBlocks(270, 100, 4, 2);
+		moveBlocks.push_back(std::unique_ptr<MoveBlock>(new MoveBlock{ renderer, static_cast<float>(SCREEN_WIDTH / 2) - 50, 195 }));
+		blocks->AddBlocks(270, 208, 4, 2);
+		moveBlocks.push_back(std::unique_ptr<MoveBlock>(new MoveBlock{ renderer, static_cast<float>(SCREEN_WIDTH / 2) + 100, 303 }));
+		blocks->AddBlocks(270, 316, 4, 2);
+
+		blocks->AddBlocks(590, 100, 2, 10);
 		break;
 	case 9:
+		blocks = std::unique_ptr<ArrayBlocks>(new ArrayBlocks{ 110, 100 , 2, 10,  renderer });
+
+		moveBlocks.push_back(std::unique_ptr<MoveBlock>(new MoveBlock{ renderer, static_cast<float>(SCREEN_WIDTH / 2) - 50, 141 }));
+		moveBlocks.push_back(std::unique_ptr<MoveBlock>(new MoveBlock{ renderer, static_cast<float>(SCREEN_WIDTH / 2) + 100, 141 }));
+
+		moveBlocks.push_back(std::unique_ptr<MoveBlock>(new MoveBlock{ renderer, static_cast<float>(SCREEN_WIDTH / 2) - 50,  249 }));
+		moveBlocks.push_back(std::unique_ptr<MoveBlock>(new MoveBlock{ renderer, static_cast<float>(SCREEN_WIDTH / 2) + 200, 249 }));
+
+		moveBlocks.push_back(std::unique_ptr<MoveBlock>(new MoveBlock{ renderer, static_cast<float>(SCREEN_WIDTH / 2) + 100, 357 }));
+		moveBlocks.push_back(std::unique_ptr<MoveBlock>(new MoveBlock{ renderer, static_cast<float>(SCREEN_WIDTH / 2) - 50, 357 }));
+
+		blocks->AddBlocks(590, 100, 2, 10);
 		break;
 	case 10:
+		blocks = std::unique_ptr<ArrayBlocks>(new ArrayBlocks{ 110, 100 , 2, 10,  renderer });
+		blocks->AddBlocks(270, 100, 4, 1);
+
+		moveBlocks.push_back(std::unique_ptr<MoveBlock>(new MoveBlock{ renderer, static_cast<float>(SCREEN_WIDTH / 2) - 50, 168 }));
+		moveBlocks.push_back(std::unique_ptr<MoveBlock>(new MoveBlock{ renderer, static_cast<float>(SCREEN_WIDTH / 2) + 100,168 }));
+		
+		blocks->AddBlocks(270, 181, 4, 1);
+
+		moveBlocks.push_back(std::unique_ptr<MoveBlock>(new MoveBlock{ renderer, static_cast<float>(SCREEN_WIDTH / 2) - 50,  249 }));
+		moveBlocks.push_back(std::unique_ptr<MoveBlock>(new MoveBlock{ renderer, static_cast<float>(SCREEN_WIDTH / 2) + 200, 249 }));
+
+		blocks->AddBlocks(270, 262, 4, 2);
+
+		moveBlocks.push_back(std::unique_ptr<MoveBlock>(new MoveBlock{ renderer, static_cast<float>(SCREEN_WIDTH / 2) + 100,357 }));
+		moveBlocks.push_back(std::unique_ptr<MoveBlock>(new MoveBlock{ renderer, static_cast<float>(SCREEN_WIDTH / 2) - 50, 357 }));
+
+		blocks->AddBlocks(110, 397, 2, 5);
+		blocks->AddBlocks(590, 397, 2, 5);
+		blocks->AddBlocks(590, 100, 2, 10);
 		break;
 	default:
 		break;
@@ -218,7 +316,7 @@ bool Game::initeObject()
 	if (!initPlatform())
 		return false;
 
-	initLevel(3);
+	initLevel(10);
 	if (!blocks.get())
 		return false;
 
