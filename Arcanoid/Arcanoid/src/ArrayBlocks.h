@@ -10,6 +10,7 @@ public:
 	void AddBlocks(float x, float y, int countRow, int  countColumn);
 	void deleteAllBlocks();
 
+	bool isEmpty() const { return Blocks.empty(); }
 	void draw();
 	std::vector<Block*> getVector() { return Blocks; }
 private:

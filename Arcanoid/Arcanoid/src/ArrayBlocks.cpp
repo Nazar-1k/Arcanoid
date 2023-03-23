@@ -14,6 +14,8 @@ ArrayBlocks::ArrayBlocks(float x, float y, int countRow, int  countColumn, SDL_R
 
 ArrayBlocks::~ArrayBlocks()
 {
+	for (int i = Blocks.size() - 1; i >= 0; i--)
+		delete Blocks[i];
 	deleteAllBlocks();
 
 	SDL_DestroyRenderer(renderer);
@@ -51,7 +53,6 @@ void ArrayBlocks::deleteAllBlocks()
 {
 	for (int i = Blocks.size() - 1; i >= 0; i--)
 	{
-		delete Blocks[i];
 		Blocks.pop_back();
 	}
 }

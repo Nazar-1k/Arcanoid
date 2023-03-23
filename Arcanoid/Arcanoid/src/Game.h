@@ -6,6 +6,7 @@
 #include "Button.h"
 #include "Text.h"
 #include "Platform.h"
+#include "Ball.h"
 
 #include <SDL_mixer.h>
 
@@ -77,6 +78,8 @@ private:
 	#pragma region Object
 
 		std::unique_ptr<BG> bg;
+
+		std::vector<std::unique_ptr<Ball>> balls;
 
 		std::unique_ptr<Platform> platform;
 

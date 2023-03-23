@@ -31,40 +31,55 @@ void Game::update()
 	if (!stop or start)
 	{
 		platform->update(SCREEN_WIDTH, SCREEN_HEIGHT);
-	
-		for (auto& moveBlock : moveBlocks)
+
+		for (auto& ball : balls)
 		{
-			moveBlock->update(SCREEN_WIDTH);
-
-			for(auto& block: blocks->getVector())
-				if (moveBlock->checkColisionBlock(block->getX(), block->getRectY(), block->getWidth(), block->getHeight()))
-				{
-					moveBlock->setSpeedDirection();
-				}
-		}
-
-		for (auto& moveBlock1 : moveBlocks)
-			for (auto& moveBlock2 : moveBlocks)
-				if (moveBlock1 != moveBlock2)
-					if (!moveBlock1->checkColisionBlock(*moveBlock2))
-						moveBlock1->setSpeedDirection();
-			
-		
-		
-
-
-
-		/*for (auto i = moveBlocks.begin(); i < moveBlocks.end() - 1; i++)
-		{
-			for (auto j = moveBlocks.begin() + 1; j < moveBlocks.end(); j++)
+			ball->update(platform->getX(), platform->getY() - platform->getHeight() / 2, SCREEN_WIDTH, SCREEN_HEIGHT);
+			if (ball->CheckColision(platform->getX(), platform->getY(), platform->getWidth(), platform->getHeight()))
 			{
-				if (moveBlocks[i]->checkColisionBlock(moveBlocks[j]))
-				{
-					moveBlocks->setSpeedDirection();
-				}
+				//if (ball->CheckColisionX(platform->getX(), platform->getWidth()))
+				//	ball->reverseDirectionX();
+				//else /*if (ball->CheckColisionY(platform->getY(), platform->getHeight()))*/
+					ball->reverseDirection();
+					/*ball->reverseDirectionY();*/
 
 			}
-		}*/
+			
+			for (auto& block: blocks->getVector())
+			if (ball->CheckColision(block->getX(), block->getY(), block->getWidth(), block->getHeight()))
+			{
+				if (ball->CheckColisionX(block->getX(), block->getWidth()))
+				{
+					ball->reverseDirectionX();
+					std::cout << "x";
+				}
+				else 
+				{
+					ball->reverseDirectionY();
+					std::cout << "y";
+				}
+			}
+		}
+
+		#pragma region MoveBlocks
+		if(blocks.get())
+			for (auto& moveBlock : moveBlocks)
+			{
+				moveBlock->update(SCREEN_WIDTH);
+
+				for(auto& block: blocks->getVector())
+					if (moveBlock->checkColisionBlock(block->getX(), static_cast<float>(block->getRectY()), block->getWidth(), block->getHeight()))
+						moveBlock->setSpeedDirection();
+				
+				for (auto& moveBlock2 : moveBlocks)
+					if (moveBlock != moveBlock2)
+						if (!moveBlock->checkColisionBlock(*moveBlock2))
+							moveBlock->setSpeedDirection();
+			}
+		#pragma endregion 
+
+		
+
 	}
 
 }
@@ -79,12 +94,22 @@ void Game::render()
 	if (!stop or start)
 	{
 		platform->render();
-		blocks->draw();
-		
+		if (blocks.get() or !blocks->isEmpty())
+			blocks->draw();
+	
 		for (auto& block : moveBlocks)
 		{
-			block->draw();
+			if (block.get())
+			{
+				block->draw();
+			}
+
 		}
+
+		for (auto& ball : balls)
+			ball->draw();
+		
+
 
 		renderUI();
 		renderStopMenu();
@@ -104,6 +129,9 @@ void Game::pollEventWindow()
             quit = true;
 
 		platform->poolEvent(e);
+
+		for (auto& ball : balls)
+			ball->poolEvent(e);
 		
 		pollEventButton();
 		cursor->PoolEvent(e);
@@ -146,6 +174,7 @@ void Game::initLevel(int level)
 	{
 	case 1:
 		blocks = std::unique_ptr<ArrayBlocks>(new ArrayBlocks{ 110, 100 , 8, 2, renderer });
+		
 		break;
 	case 2:
 		blocks = std::unique_ptr<ArrayBlocks>(new ArrayBlocks{ 110, 100 , 8, 4,  renderer });
@@ -233,7 +262,6 @@ void Game::initLevel(int level)
 	}
 }
 
-
 void Game::close()
 {
     //Destroy window
@@ -316,9 +344,8 @@ bool Game::initeObject()
 	if (!initPlatform())
 		return false;
 
-	initLevel(10);
-	if (!blocks.get())
-		return false;
+	balls.push_back(std::unique_ptr<Ball>(new Ball{ platform->getX(), platform->getY() - platform->getHeight() / 2, renderer }));
+
 
     return true;
 }
@@ -414,32 +441,37 @@ void  Game::renderUI()
 
 	stopButton->draw();
 
-	int life = 3;
-	if (life >= 1)
+	
+	
+	
+	if (Ball::getLife() >= 1)
 	{
 		heart->setX(10);
 		heart->setY(10);
 		heart->render();
 	}
 
-	if (life >= 2)
+	if (Ball::getLife() >= 2)
 	{
 		heart->setX(heart->getX() + heart->getWidth());
 		heart->render();
 	}
 
-
-	if (life == 3)
+	if (Ball::getLife() == 3)
 	{
 
 		heart->setX(heart->getX() + heart->getWidth());
 		heart->render();
 	}
+
+	if (Ball::getLife() == 0)
+	restartGame();
+
 }
 
 void Game::renderStopMenu()
 {
-	if (stop)
+	if (stop and !gameOver)
 	{
 		SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
 		SDL_SetRenderDrawColor(renderer, 23, 8, 18, static_cast<Uint8>(255));
@@ -456,6 +488,7 @@ void Game::pollEventButton()
 {
 	if ((e.type == SDL_KEYDOWN or e.type == SDL_MOUSEBUTTONDOWN) and !start)
 	{
+		initLevel(level);
 		start = true;
 		stop = false;
 	}
@@ -483,11 +516,31 @@ void Game::pollEventButton()
 
 void Game::restartGame()
 {
+	for (auto& ball : balls)
+	{
+		if (Ball::getCountBall() == 1)
+			Ball::startSet(*ball);
+		else
+			balls.pop_back();
+	}
+
+	
+
+	level = 1;
+	gameOver = true;
 	start = false;
 	stop = true;
+	deleteObject();
+	blocks.release();
+	/*for (auto& block:moveBlocks)
+		block.release();*/
+
 }
 
 void Game::deleteObject()
 {
 	blocks->deleteAllBlocks();
+	for (int i = moveBlocks.size() - 1; i >= 0; i--)
+		moveBlocks.pop_back();
+
 }

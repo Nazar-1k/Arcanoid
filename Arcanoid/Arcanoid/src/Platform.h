@@ -17,6 +17,12 @@ public:
 
 	void setMode(int mode);
 
+	float getX() const { return x; }
+	float getY() const { return y; }
+
+	int getWidth() const { return m_rect.w; }
+	int getHeight() const { return m_rect.h; }
+
 private:
 	void setPosition();
 	void setRect();
