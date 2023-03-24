@@ -160,9 +160,3 @@ void  Block::draw()
 	/*SDL_SetRenderDrawColor(renderer, 63, 48, 183, 100);
 	SDL_RenderFillRect(renderer, &m_rect);*/
 }
-
-bool Block::checkColision(float x, float y, int radius)
-{
-	return (x + radius >= m_rect.x && x + radius <= m_rect.x + m_rect.w &&
-		y + radius >= m_rect.y && y + radius <= m_rect.y + m_rect.h);
-}

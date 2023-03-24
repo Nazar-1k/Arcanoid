@@ -118,24 +118,58 @@ void Ball::poolEvent(SDL_Event& event)
 }
 
 
-bool Ball::CheckColision(float x_, float y_, int width_, int height_) const
+bool Ball::CheckCollision(float x_, float y_, int width_, int height_) const
 {
-	return (x + width / 2 >= x_ - width_ / 2 &&
-		x - width / 2 <= x_ + width_ / 2 &&
-		y + height / 2 >= y_ - height_ / 2 &&
-		y - height / 2 <= y_ + height_ / 2);
+	return (x + width / 2 > x_ - width_ / 2  &&
+		x - width / 2 < x_ + width_ / 2  &&
+		y + height / 2 > y_ - height_ / 2 &&
+		y - height / 2 < y_ + height_ / 2);
 
 }
-bool Ball::CheckColisionX(float x_, int width_) const
+
+bool Ball::CheckSideCollision(float x_, float y_, int width_, int height_)  
 {
-	return (x + width / 2 > x_ - width_ / 2 or
-		x - width / 2 < x_ + width_ / 2);
+	if (CheckCollision(x_, y_, width_, height_)) {
+
+		// Check if ball is moving towards the left side of the block
+		if (dx > 0 && x + width / 2 >= x_ - width_ / 2 && x - width / 2 < x_ - width_ / 2)
+		{
+			reverseDirectionX();
+			return true;
+		}
+
+		// Check if ball is moving towards the right side of the block
+		if (dx < 0 && x - width / 2 <= x_ + width_ / 2 && x + width / 2 > x_ + width_ / 2)
+		{
+			reverseDirectionX();
+			return true;
+		}
+	}
+
+	return false;
 }
-bool Ball::CheckColisionY(float y_, int height_) const
-{
-	return (y + height / 2 > y_ - height_ / 2 or
-		y - height / 2 < y_ + height_ / 2);
+
+bool Ball::CheckEdgeCollision(float x_, float y_, int width_, int height_) {
+	if (CheckCollision(x_, y_, width_, height_)) {
+
+		// Check if ball is moving towards the top edge of the block
+		if (dy > 0 && y + width / 2 >= y_ - height_ / 2 && y - width / 2 < y_ - height_ / 2) 
+		{
+			reverseDirectionY();
+			return true;
+		}
+
+		// Check if ball is moving towards the bottom edge of the block
+		if (dy < 0 && y - width / 2 <= y_ + height_ / 2 && y + width / 2 > y_ + height_ / 2) 
+		{
+			reverseDirectionY();
+			return true;
+		}
+	}
+
+	return false;
 }
+
 
 void Ball::reverseDirection()
 {

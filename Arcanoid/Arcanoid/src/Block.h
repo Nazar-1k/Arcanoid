@@ -12,18 +12,30 @@ public:
 
 	void draw();
 	
-	bool checkColision(float x, float y, int radius);
 
 	void getSize(int& width, int& height) const;
 	int getWidth() const { return  BlockSprite[0]->getWidth(); }
 	int getHeight() const { return BlockSprite[0]->getHeight(); }
-	
 	
 	int getRectY() { return m_rect.y; }
 
 	float getX() const { return x; }
 	float getY() const { return y; }
 
+	bool isDestroy() const { return destroyBlock; }
+	void destroyB(int size) 
+	{
+		if (!crackBlock and size == 1)
+		{
+			crackBlock = true;
+		}
+		else
+		{
+			destroyBlock = true;
+
+		}
+
+	};
 
 protected:
 	void initBlock();

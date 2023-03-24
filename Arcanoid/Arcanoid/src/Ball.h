@@ -16,10 +16,14 @@ public:
 	void poolEvent(SDL_Event& event);
 
 	void SetSizeBall(int size);
+	int getSizeBall()const { return sizeBall; }
 
-	bool CheckColision(float x, float y, int width, int height) const;
-	bool CheckColisionX(float x, int width) const ;
-	bool CheckColisionY(float y, int height) const ;
+	void reduceSpeed() { speedBall -= speedBall * 0.1; }
+
+	bool CheckCollision(float x, float y, int width, int height) const;
+
+	bool CheckSideCollision(float x_, float y_, int width_, int height_);
+	bool CheckEdgeCollision(float x_, float y_, int width_, int height_);
 
 	void reverseDirection();
 	void reverseDirectionX();

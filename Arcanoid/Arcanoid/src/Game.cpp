@@ -7,7 +7,7 @@ Game::Game()
 	MenuBG{ 0,0,0,0 },
 	start(false), stop(true), gameOver(false),
 	score_points(0),
-	level(1)
+	level(10)
 {
 }
 
@@ -35,30 +35,35 @@ void Game::update()
 		for (auto& ball : balls)
 		{
 			ball->update(platform->getX(), platform->getY() - platform->getHeight() / 2, SCREEN_WIDTH, SCREEN_HEIGHT);
-			if (ball->CheckColision(platform->getX(), platform->getY(), platform->getWidth(), platform->getHeight()))
-			{
-				//if (ball->CheckColisionX(platform->getX(), platform->getWidth()))
-				//	ball->reverseDirectionX();
-				//else /*if (ball->CheckColisionY(platform->getY(), platform->getHeight()))*/
-					ball->reverseDirection();
-					/*ball->reverseDirectionY();*/
 
-			}
+			//platform Collision
+			ball->CheckSideCollision(platform->getX(), platform->getY(), platform->getWidth(), platform->getHeight());
+			ball->CheckEdgeCollision(platform->getX(), platform->getY(), platform->getWidth(), platform->getHeight());
 			
-			for (auto& block: blocks->getVector())
-			if (ball->CheckColision(block->getX(), block->getY(), block->getWidth(), block->getHeight()))
+			//Collision With blocks
+			for (auto& block : blocks->getVector()) 
 			{
-				if (ball->CheckColisionX(block->getX(), block->getWidth()))
+				if (!block->isDestroy())
 				{
-					ball->reverseDirectionX();
-					std::cout << "x";
+					if (ball->CheckSideCollision(block->getX(), block->getY(), block->getWidth(), block->getHeight()) or ball->CheckEdgeCollision(block->getX(), block->getY(), block->getWidth(), block->getHeight()))
+					{
+						block->destroyB(ball->getSizeBall());
+						ball->reduceSpeed();
+						break;
+					}
 				}
-				else 
-				{
-					ball->reverseDirectionY();
-					std::cout << "y";
-				}
+				
 			}
+
+			//Collision With Move blocks
+			for (auto& block : moveBlocks)
+			{
+				if (ball->CheckSideCollision(block->getX(), block->getY(), block->getWidth(), block->getHeight()))
+					break;
+
+				if (ball->CheckEdgeCollision(block->getX(), block->getY(), block->getWidth(), block->getHeight()))
+					break;
+			}	
 		}
 
 		#pragma region MoveBlocks
@@ -68,8 +73,9 @@ void Game::update()
 				moveBlock->update(SCREEN_WIDTH);
 
 				for(auto& block: blocks->getVector())
-					if (moveBlock->checkColisionBlock(block->getX(), static_cast<float>(block->getRectY()), block->getWidth(), block->getHeight()))
-						moveBlock->setSpeedDirection();
+					if (!block->isDestroy())
+						if (moveBlock->checkColisionBlock(block->getX(), static_cast<float>(block->getRectY()), block->getWidth(), block->getHeight()))
+							moveBlock->setSpeedDirection();
 				
 				for (auto& moveBlock2 : moveBlocks)
 					if (moveBlock != moveBlock2)
