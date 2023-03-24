@@ -6,8 +6,7 @@ Game::Game()
 	window(nullptr), renderer(nullptr), icon(nullptr), e(),
 	MenuBG{ 0,0,0,0 },
 	start(false), stop(true), gameOver(false),
-	score_points(0),
-	level(10)
+	level(1)
 {
 }
 
@@ -32,50 +31,59 @@ void Game::update()
 	{
 		platform->update(SCREEN_WIDTH, SCREEN_HEIGHT);
 
-		for (auto& ball : balls)
-		{
-			ball->update(platform->getX(), platform->getY() - platform->getHeight() / 2, SCREEN_WIDTH, SCREEN_HEIGHT);
 
-			//platform Collision
-			ball->CheckSideCollision(platform->getX(), platform->getY(), platform->getWidth(), platform->getHeight());
-			ball->CheckEdgeCollision(platform->getX(), platform->getY(), platform->getWidth(), platform->getHeight());
+		#pragma region Balls
+			for (auto& ball : balls)
+			{
+				ball->update(platform->getX(), platform->getY() - platform->getHeight() / 2, SCREEN_WIDTH, SCREEN_HEIGHT);
+
+				//platform Collision
+				ball->CheckSideCollision(platform->getX(), platform->getY(), platform->getWidth(), platform->getHeight());
+				ball->CheckEdgeCollision(platform->getX(), platform->getY(), platform->getWidth(), platform->getHeight());
 			
-			//Collision With blocks
-			for (auto& block : blocks->getVector()) 
-			{
-				if (!block->isDestroy())
+				//Collision With blocks
+				for (auto& block : blocks->getVector()) 
 				{
-					if (ball->CheckSideCollision(block->getX(), block->getY(), block->getWidth(), block->getHeight()) or ball->CheckEdgeCollision(block->getX(), block->getY(), block->getWidth(), block->getHeight()))
+					if (!block->isDestroy())
 					{
-						block->destroyB(ball->getSizeBall());
-						ball->reduceSpeed();
-						break;
+						if (ball->CheckSideCollision(block->getX(), block->getY(), block->getWidth(), block->getHeight()) or ball->CheckEdgeCollision(block->getX(), block->getY(), block->getWidth(), block->getHeight()))
+						{
+							block->destroyB(ball->getSizeBall());
+							ball->reduceSpeed();
+							break;
+						}
 					}
-				}
 				
+				}
+
+				//Collision With Move blocks
+				if (!moveBlocks.empty())
+				for (auto& block : moveBlocks)
+				{
+					if (ball->CheckSideCollision(block->getX(), block->getY(), block->getWidth(), block->getHeight()))
+						break;
+				
+
+					if (ball->CheckEdgeCollision(block->getX(), block->getY(), block->getWidth(), block->getHeight()))
+						break;
+				
+				}	
 			}
-
-			//Collision With Move blocks
-			for (auto& block : moveBlocks)
-			{
-				if (ball->CheckSideCollision(block->getX(), block->getY(), block->getWidth(), block->getHeight()))
-					break;
-
-				if (ball->CheckEdgeCollision(block->getX(), block->getY(), block->getWidth(), block->getHeight()))
-					break;
-			}	
-		}
+		#pragma endregion
 
 		#pragma region MoveBlocks
-		if(blocks.get())
+		if (!moveBlocks.empty())
 			for (auto& moveBlock : moveBlocks)
 			{
 				moveBlock->update(SCREEN_WIDTH);
 
 				for(auto& block: blocks->getVector())
 					if (!block->isDestroy())
-						if (moveBlock->checkColisionBlock(block->getX(), static_cast<float>(block->getRectY()), block->getWidth(), block->getHeight()))
+						if (moveBlock->checkColisionBlock(block->getX(), static_cast<float>(block->getY()), block->getWidth(), block->getHeight()))
+						{
 							moveBlock->setSpeedDirection();
+							break;
+						}
 				
 				for (auto& moveBlock2 : moveBlocks)
 					if (moveBlock != moveBlock2)
@@ -84,8 +92,16 @@ void Game::update()
 			}
 		#pragma endregion 
 
-		
+		#pragma region Level	
+		blocks->update();
 
+		if (moveBlocks.empty() and blocks->isEmpty())
+		{
+			level++;
+			restartGame();
+		}
+
+		#pragma endregion
 	}
 
 }
@@ -103,14 +119,15 @@ void Game::render()
 		if (blocks.get() or !blocks->isEmpty())
 			blocks->draw();
 	
-		for (auto& block : moveBlocks)
-		{
-			if (block.get())
+		if (!moveBlocks.empty())	
+			for (auto& block : moveBlocks)
 			{
-				block->draw();
-			}
+				if (block.get())
+				{
+					block->draw();
+				}
 
-		}
+			}
 
 		for (auto& ball : balls)
 			ball->draw();
@@ -405,15 +422,15 @@ bool Game::initUI()
 	stopButton->setColor(250, 118, 206);
 	stopButton->setSize(50);
 
-	scoreText = std::unique_ptr<Text>(new Text(1, 1, renderer, "Score", 30, { 250, 118, 206, 255 }));
-	scoreText->setPosition(SCREEN_WIDTH - stopButton->getWidth() - scoreText->getWidth(), 25);
+	levelText = std::unique_ptr<Text>(new Text(1, 1, renderer, "Level: ", 30, { 250, 118, 206, 255 }));
+	levelText->setPosition(SCREEN_WIDTH - stopButton->getWidth() - levelText->getWidth(), 25);
 
 	heart = std::unique_ptr<Sprite>(new Sprite{ "data/Heart/Heart.png", renderer });
 
 	heart->setX(static_cast<float>(heart->getWidth() + 50));
 	heart->setY(static_cast<float>(heart->getHeight() + 50));
 
-	if (!stopButton or !scoreText or !heart)
+	if (!stopButton or !levelText or !heart)
 	{
 		return false;
 	}
@@ -442,8 +459,8 @@ void Game::renderStartText()
 
 void  Game::renderUI()
 {
-	scoreText->SetText("Score: " + std::to_string(score_points));
-	scoreText->draw();
+	levelText->SetText("Level: " + std::to_string(level));
+	levelText->draw();
 
 	stopButton->draw();
 
@@ -471,7 +488,10 @@ void  Game::renderUI()
 	}
 
 	if (Ball::getLife() == 0)
-	restartGame();
+	{
+		gameOver = true;
+		restartGame();
+	}
 
 }
 
@@ -522,6 +542,10 @@ void Game::pollEventButton()
 
 void Game::restartGame()
 {
+	/*gameOver = false;*/
+	start = false;
+	stop = true;
+
 	for (auto& ball : balls)
 	{
 		if (Ball::getCountBall() == 1)
@@ -530,23 +554,22 @@ void Game::restartGame()
 			balls.pop_back();
 	}
 
+	Ball::setLife(3);
 	
-
-	level = 1;
-	gameOver = true;
-	start = false;
-	stop = true;
 	deleteObject();
 	blocks.release();
-	/*for (auto& block:moveBlocks)
-		block.release();*/
 
+	
+	
+	for (auto& block : moveBlocks)
+	{
+		 block.release();
+	}
+	moveBlocks.erase(moveBlocks.begin(), moveBlocks.end());
 }
 
 void Game::deleteObject()
 {
 	blocks->deleteAllBlocks();
-	for (int i = moveBlocks.size() - 1; i >= 0; i--)
-		moveBlocks.pop_back();
-
+	/*moveBlocks.clear();*/
 }

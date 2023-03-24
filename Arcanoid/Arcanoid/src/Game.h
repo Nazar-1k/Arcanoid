@@ -109,8 +109,7 @@ private:
 
 	#pragma region UI
 
-		std::unique_ptr<Text> scoreText;
-		int score_points;
+		std::unique_ptr<Text> levelText;
 		std::unique_ptr<Button> stopButton;
 
 		std::unique_ptr<Sprite> heart;

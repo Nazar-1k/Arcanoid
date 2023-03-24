@@ -72,19 +72,26 @@ void MoveBlock::draw()
 	if (!destroyBlock)
 	{
 		BlockSprite[0]->render_(x, y);
-	/*	SDL_SetRenderDrawColor(renderer, 63, 48, 183, 100);
+		/*SDL_SetRenderDrawColor(renderer, 63, 48, 183, 100);
 	SDL_RenderFillRect(renderer, &m_rect);*/
 	}
+}
+
+
+bool check_collision(SDL_Rect rect1, SDL_Rect rect2) {
+	
+	return rect1.x + rect1.w >= rect2.x && rect1.x <= rect2.x + rect2.w
+		&& rect1.y + rect1.h > rect2.y && rect1.y < rect2.y + rect2.h; 
 }
 
 bool MoveBlock::checkColisionBlock(float Blockx,float Blocky, int widthBlock, int heightBlock)
 {
 	int w_moveBlock, h_moveBlock;
 	getSize(w_moveBlock, h_moveBlock);
-	
-	return (x + w_moveBlock / 2 <= Blockx - widthBlock / 2 
-		or x - w_moveBlock / 2 >= Blockx + widthBlock / 2)
-		and (m_rect.y == Blocky / 2 or m_rect.y == Blocky - heightBlock);
+
+	SDL_Rect rect2 = { static_cast<int>(Blockx - widthBlock / 2), static_cast<int>(Blocky - heightBlock / 2), widthBlock, heightBlock };
+
+	return check_collision(m_rect, rect2);
 }
 
 bool MoveBlock::checkColisionBlock(MoveBlock& block)
@@ -99,6 +106,7 @@ bool MoveBlock::checkColisionBlock(MoveBlock& block)
 		or x - w_moveBlock1 / 2 >= block.x + w_moveBlock2 / 2)
 		and (y == block.y);
 }
+
 void MoveBlock::initBlock()
 {
 

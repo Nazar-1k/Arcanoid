@@ -19,6 +19,7 @@ public:
 	int getSizeBall()const { return sizeBall; }
 
 	void reduceSpeed() { speedBall -= speedBall * 0.1; }
+	void increaseSpeed(int speed) {  speedBall += speed; }
 
 	bool CheckCollision(float x, float y, int width, int height) const;
 
@@ -32,6 +33,8 @@ public:
 	static void startSet(Ball& ball);
 	static int getLife() { return countlife; }
 	static int getCountBall() { return countBall; }
+	static void setLife(int life) { countlife = life; }
+
 
 private:
 	float dx, dy;

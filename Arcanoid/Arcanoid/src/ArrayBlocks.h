@@ -9,6 +9,7 @@ public:
 
 	void AddBlocks(float x, float y, int countRow, int  countColumn);
 	void deleteAllBlocks();
+	void update();
 
 	bool isEmpty() const { return Blocks.empty(); }
 	void draw();

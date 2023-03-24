@@ -49,10 +49,18 @@ void ArrayBlocks::draw()
 	}
 }
 
+void ArrayBlocks::update()
+{
+	for ( auto i = 0; i < Blocks.size(); i++)
+	{
+		if (Blocks[i]->isDestroy())
+		{
+			Blocks.erase(Blocks.begin() + i);
+		}
+	}
+}
+
 void ArrayBlocks::deleteAllBlocks()
 {
-	for (int i = Blocks.size() - 1; i >= 0; i--)
-	{
-		Blocks.pop_back();
-	}
+	Blocks.clear();
 }

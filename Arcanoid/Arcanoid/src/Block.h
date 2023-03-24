@@ -17,7 +17,6 @@ public:
 	int getWidth() const { return  BlockSprite[0]->getWidth(); }
 	int getHeight() const { return BlockSprite[0]->getHeight(); }
 	
-	int getRectY() { return m_rect.y; }
 
 	float getX() const { return x; }
 	float getY() const { return y; }
@@ -32,7 +31,6 @@ public:
 		else
 		{
 			destroyBlock = true;
-
 		}
 
 	};

@@ -9,7 +9,7 @@ public:
 	MoveBlock(SDL_Renderer* renderer, float x, float y);
 	MoveBlock(SDL_Renderer* renderer, float x, float y, int color);
 
-	~MoveBlock(){}
+	~MoveBlock() { }
 
 	void update(int sWidth);
 
@@ -20,6 +20,7 @@ public:
 
 	void setSpeedDirection() { speadBlock *= -1; }
 
+	int getSpeed() const { return speadBlock; }
 
 private:
 	int speadBlock = 2;

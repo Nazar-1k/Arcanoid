@@ -157,6 +157,6 @@ void  Block::draw()
 		else
 			BlockSprite[1]->render_();
 	}
-	/*SDL_SetRenderDrawColor(renderer, 63, 48, 183, 100);
+	/*SDL_SetRenderDrawColor(renderer, 255, 255, 255, 100);
 	SDL_RenderFillRect(renderer, &m_rect);*/
 }
