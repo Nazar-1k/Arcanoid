@@ -6,7 +6,7 @@ Game::Game()
 	window(nullptr), renderer(nullptr), icon(nullptr), e(),
 	MenuBG{ 0,0,0,0 },
 	start(false), stop(true), gameOver(false),
-	level(1)
+	level(3)
 {
 }
 
@@ -31,7 +31,6 @@ void Game::update()
 	{
 		platform->update(SCREEN_WIDTH, SCREEN_HEIGHT);
 
-
 		#pragma region Balls
 			for (auto& ball : balls)
 			{
@@ -48,6 +47,7 @@ void Game::update()
 					{
 						if (ball->CheckSideCollision(block->getX(), block->getY(), block->getWidth(), block->getHeight()) or ball->CheckEdgeCollision(block->getX(), block->getY(), block->getWidth(), block->getHeight()))
 						{
+							ability = std::unique_ptr<Ability>( new Ability{ block->getX(), block->getY(), renderer });
 							block->destroyB(ball->getSizeBall());
 							ball->reduceSpeed();
 							break;
@@ -95,11 +95,69 @@ void Game::update()
 		#pragma region Level	
 		blocks->update();
 
-		if (moveBlocks.empty() and blocks->isEmpty())
+		if (blocks->isEmpty())
 		{
 			level++;
 			restartGame();
 		}
+
+		#pragma endregion
+
+		#pragma region Ability
+
+		if (ability)
+		{
+			ability->update();
+
+			if (platform->check_collision(ability->getX(), ability->getY(), ability->getWidth(), ability->getHeight()))
+			{
+				switch (ability->getMode())
+				{
+				case 0:
+					if (!ability->isGet())
+						balls.push_back(std::unique_ptr<Ball>(new Ball{ platform->getX(), platform->getY() - platform->getHeight() / 2, renderer }));
+					break;
+				case 1:
+					
+					for (auto& ball: balls)
+						ball->SetSizeBall(3);
+					break;
+				case 2:
+					for (auto& ball : balls)
+						ball->SetSizeBall(1);
+					break;
+				case 3:
+					Ball::setSpeed(1.1);
+					break;
+				case 4:
+					Ball::setSpeed(0.1);
+					break;
+				case 5:
+					platform->setMode(1);
+					break;
+				case 6:
+					platform->setMode(2);
+					break;
+				case 7:
+					platform->setMode(3);
+					break;
+				case 8:
+
+					break;
+
+
+
+				default:
+					break;
+				}
+				
+				ability->setGet();
+			}
+			
+			
+		}
+		
+			
 
 		#pragma endregion
 	}
@@ -132,8 +190,9 @@ void Game::render()
 		for (auto& ball : balls)
 			ball->draw();
 		
-
-
+		if (ability)
+			ability->draw();
+		
 		renderUI();
 		renderStopMenu();
 	}
@@ -370,6 +429,8 @@ bool Game::initeObject()
 	balls.push_back(std::unique_ptr<Ball>(new Ball{ platform->getX(), platform->getY() - platform->getHeight() / 2, renderer }));
 
 
+	
+
     return true;
 }
 
@@ -546,30 +607,36 @@ void Game::restartGame()
 	start = false;
 	stop = true;
 
-	for (auto& ball : balls)
-	{
-		if (Ball::getCountBall() == 1)
-			Ball::startSet(*ball);
-		else
-			balls.pop_back();
-	}
 
 	Ball::setLife(3);
 	
 	deleteObject();
-	blocks.release();
-
 	
-	
-	for (auto& block : moveBlocks)
-	{
-		 block.release();
-	}
-	moveBlocks.erase(moveBlocks.begin(), moveBlocks.end());
 }
 
 void Game::deleteObject()
 {
 	blocks->deleteAllBlocks();
-	/*moveBlocks.clear();*/
+
+	blocks.release();
+
+	for (auto& block : moveBlocks)
+	{
+		
+		block.release();
+	}
+	moveBlocks.erase(moveBlocks.begin(), moveBlocks.end());
+	
+	
+	ability.release();
+
+	for (auto& ball : balls)
+	{
+		ball->~Ball();
+		ball.release();
+	}
+	balls.erase(balls.begin(), balls.end());
+	
+	
+	balls.push_back(std::unique_ptr<Ball>(new Ball{ platform->getX(), platform->getY() - platform->getHeight() / 2, renderer }));
 }

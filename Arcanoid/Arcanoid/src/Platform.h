@@ -23,6 +23,8 @@ public:
 	int getWidth() const { return m_rect.w; }
 	int getHeight() const { return m_rect.h; }
 
+	bool check_collision(float x, float y, int widt, int height)  const;
+
 private:
 	void setPosition();
 	void setRect();

@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Ability.cpp" />
     <ClCompile Include="src\Ball.cpp" />
     <ClCompile Include="src\ArrayBlocks.cpp" />
     <ClCompile Include="src\Block.cpp" />
@@ -34,6 +35,7 @@
     <ClCompile Include="src\Text.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Ability.h" />
     <ClInclude Include="src\Ball.h" />
     <ClInclude Include="src\MoveBlock.h" />
     <ClInclude Include="src\ArrayBlocks.h" />

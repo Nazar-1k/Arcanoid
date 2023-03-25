@@ -35,6 +35,7 @@ public:
 	static int getCountBall() { return countBall; }
 	static void setLife(int life) { countlife = life; }
 
+	static void setSpeed(float speed) { speedBall += speedBall * speed; }
 
 private:
 	float dx, dy;
@@ -54,10 +55,5 @@ private:
 	int sizeBall;
 
 	bool isActive;
-
-	SDL_Renderer* renderer;
-
-
-
 };
 

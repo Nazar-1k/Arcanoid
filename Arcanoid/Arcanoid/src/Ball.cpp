@@ -9,11 +9,12 @@
 
 
 Ball::Ball(float x, float y, SDL_Renderer* renderer)
-	:renderer(renderer),
+	:Sprite("data/Balls/BigBall.png", renderer),
 	dx(0), dy(0), sizeBall(2),
 	isActive(false)
 {
-	initSprite(pathBall, renderer);
+	/*this->renderer = renderer;*/
+	/*initSprite(pathBall, this->renderer);*/
 	SetSizeBall(sizeBall);
 	this->y = y - getHeight() / 2;
 	this->x = x;
@@ -27,8 +28,7 @@ Ball::Ball(float x, float y, SDL_Renderer* renderer)
 
 Ball::~Ball()
 {
-	renderer = nullptr;
-	SDL_DestroyRenderer(renderer);
+	countBall--;
 }
 
 void Ball::startSet(Ball& ball)
@@ -87,10 +87,12 @@ void Ball::update(float x_platform, float y_platform, int sWidth, int sHeight)
 
 			if (y + height / 2 > sHeight + height)
 			{
-				if (countBall != 1)
-					countBall--;
+				if (countBall > 1)
+				{
+					this->~Ball();
+				}
 
-				if (countBall == 1)
+				else if (countBall == 1)
 				{
 					startSet(*this);
 				}

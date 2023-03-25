@@ -7,6 +7,7 @@
 #include "Text.h"
 #include "Platform.h"
 #include "Ball.h"
+#include "Ability.h"
 
 #include <SDL_mixer.h>
 
@@ -86,6 +87,8 @@ private:
 		int level;
 		std::unique_ptr <ArrayBlocks> blocks;
 		std::vector<std::unique_ptr <MoveBlock>> moveBlocks;
+
+		std::unique_ptr<Ability> ability;
 
 
 	#pragma endregion

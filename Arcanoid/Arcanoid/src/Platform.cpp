@@ -237,4 +237,10 @@ void Platform::render()
    /* SDL_RenderFillRect(renderer, &m_rect);*/
 }
 
+bool Platform::check_collision(float x, float y, int width, int height)  const {
+
+    return this->x + getWidth() / 2 > x - width / 2  && this->x - getWidth() / 2 < x + width / 2
+        && this->y + getHeight() / 2 >= y - height / 2 && this->y - getHeight() / 2  <= y + height / 2;
+}
+
 
