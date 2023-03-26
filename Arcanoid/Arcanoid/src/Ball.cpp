@@ -40,7 +40,7 @@ void Ball::startSet(Ball& ball)
 		
 	ball.isActive = false;
 	ball.SetSizeBall(2);
-	speedBall = ball.startSpeed;
+	ball.speedBall = Ball::startSpeed;
 
 	ball.angle = 30 + rand() % (150 - 31) * M_PI / 180;
 	ball.dx = static_cast<float>(sin(ball.angle));
@@ -200,6 +200,8 @@ void Ball::SetSizeBall(int size)
 		setSize(70, 70);
 
 }
+
+const double Ball::startSpeed = 4;
 
 double Ball::speedBall = 4;
 

@@ -6,7 +6,7 @@ Game::Game()
 	window(nullptr), renderer(nullptr), icon(nullptr), e(),
 	MenuBG{ 0,0,0,0 },
 	start(false), stop(true), gameOver(false),
-	level(3)
+	level(1)
 {
 }
 
@@ -27,7 +27,7 @@ bool Game::init()
 
 void Game::update()
 {
-	if (!stop or start)
+	if (!stop or !start)
 	{
 		platform->update(SCREEN_WIDTH, SCREEN_HEIGHT);
 
@@ -130,7 +130,7 @@ void Game::update()
 					Ball::setSpeed(1.1);
 					break;
 				case 4:
-					Ball::setSpeed(0.1);
+					Ball::setSpeed(-0.1);
 					break;
 				case 5:
 					platform->setMode(1);
@@ -589,7 +589,7 @@ void Game::pollEventButton()
 
 	RestartButton->handleEvent(e, cursor->getX(), cursor->getY());
 	if (RestartButton->isPressed())
-		restartGame();
+		restartGame(1);
 
 	stopButton->handleEvent(e, cursor->getX(), cursor->getY());
 	if (stopButton->isPressed())
@@ -601,17 +601,21 @@ void Game::pollEventButton()
 	}
 }
 
-void Game::restartGame()
+void Game::restartGame(int level)
 {
-	/*gameOver = false;*/
+	if (level == 1)
+		this->level = 1;
+	
+	deleteObject();
+
 	start = false;
 	stop = true;
 
+	platform->setMode(0);
 
+	balls.push_back(std::unique_ptr<Ball>(new Ball{ platform->getX(), platform->getY() - platform->getHeight() / 2, renderer }));
+	Ball::startSet(*balls[0]);
 	Ball::setLife(3);
-	
-	deleteObject();
-	
 }
 
 void Game::deleteObject()
@@ -638,5 +642,5 @@ void Game::deleteObject()
 	balls.erase(balls.begin(), balls.end());
 	
 	
-	balls.push_back(std::unique_ptr<Ball>(new Ball{ platform->getX(), platform->getY() - platform->getHeight() / 2, renderer }));
+	
 }

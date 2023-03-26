@@ -46,7 +46,7 @@ private:
 
 	static double speedBall;
 
-	const double startSpeed = 4;
+	static const double startSpeed;
 	const double maxSpeedBall = startSpeed * 3 ;
 	const double minSpeedBall = startSpeed * 0.4;
 

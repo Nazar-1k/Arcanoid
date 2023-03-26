@@ -52,7 +52,7 @@ private:
 
 	void pollEventButton();
 
-	void restartGame();
+	void restartGame(int level = -1);
 	void deleteObject();
 
 	#pragma region Window
