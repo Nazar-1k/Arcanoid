@@ -25,7 +25,7 @@
 #pragma endregion
 
 Ability::Ability(float x, float y, SDL_Renderer* renderer)
-	:modeAbility(rand()%9), renderer(renderer),
+	:modeAbility(0), renderer(renderer),
 	get(false)
 {
 	switch (modeAbility)
@@ -80,9 +80,26 @@ void Ability::draw()
 		render_();
 }
 
-void Ability::update()
+void Ability::update(int S_height)
 {
 	y += speedAbility;
+
+	if (!get)
+	{
+		timer.start();
+	}
+	std::cout << timer.getTicks() << std::endl;
+	if (timer.getTicks() <= 10'000)
+		StopAbility = true;
+	else 
+		StopAbility = false;
+
+	if (y >= S_height and get == false)
+	{
+		fall = true;
+		StopAbility = false;
+	}
 }
 
 int  Ability::priviosAbility = -1;
+bool Ability::StopAbility = false;

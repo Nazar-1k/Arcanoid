@@ -27,7 +27,7 @@ bool Game::init()
 
 void Game::update()
 {
-	if (!stop or !start)
+	if (!stop or start)
 	{
 		platform->update(SCREEN_WIDTH, SCREEN_HEIGHT);
 
@@ -47,7 +47,11 @@ void Game::update()
 					{
 						if (ball->CheckSideCollision(block->getX(), block->getY(), block->getWidth(), block->getHeight()) or ball->CheckEdgeCollision(block->getX(), block->getY(), block->getWidth(), block->getHeight()))
 						{
-							ability = std::unique_ptr<Ability>( new Ability{ block->getX(), block->getY(), renderer });
+							
+							if (!Ability::getStopAbility() and rand() % 2 == 1)
+								ability = std::unique_ptr<Ability>( new Ability{ block->getX(), block->getY(), renderer });
+
+							
 							block->destroyB(ball->getSizeBall());
 							ball->reduceSpeed();
 							break;
@@ -105,9 +109,12 @@ void Game::update()
 
 		#pragma region Ability
 
+
+
 		if (ability)
 		{
-			ability->update();
+			
+			ability->update(SCREEN_HEIGHT);
 
 			if (platform->check_collision(ability->getX(), ability->getY(), ability->getWidth(), ability->getHeight()))
 			{
@@ -115,7 +122,22 @@ void Game::update()
 				{
 				case 0:
 					if (!ability->isGet())
-						balls.push_back(std::unique_ptr<Ball>(new Ball{ platform->getX(), platform->getY() - platform->getHeight() / 2, renderer }));
+					{
+						for (auto& ball : balls)
+							if (ball)
+							{
+								balls.push_back(std::unique_ptr<Ball>(new Ball{ ball->getX(), ball->getY() - ball->getHeight() / 2, renderer, static_cast<float>(sin(45 * M_PI / 180)), static_cast<float>(-cos(45 * M_PI / 180)), true }));
+								break;
+							}
+						
+						for (auto& ball : balls)
+							if (ball)
+							{
+								balls.push_back(std::unique_ptr<Ball>(new Ball{ ball->getX(), ball->getY() - ball->getHeight() / 2, renderer, static_cast<float>(sin(135 * M_PI / 180)), static_cast<float>(-cos(135 * M_PI / 180)), true }));
+								break;
+							}
+								
+					}
 					break;
 				case 1:
 					
@@ -127,16 +149,22 @@ void Game::update()
 						ball->SetSizeBall(1);
 					break;
 				case 3:
-					Ball::setSpeed(1.1);
+					Ball::setSpeed(0.1);
 					break;
 				case 4:
 					Ball::setSpeed(-0.1);
 					break;
 				case 5:
-					platform->setMode(1);
+					if (platform->getMode() == 1 or platform->getMode() == 0)
+						platform->setMode(1);
+					else
+						platform->setMode(0);
 					break;
 				case 6:
-					platform->setMode(2);
+					if (platform->getMode() == 1 or platform->getMode() == 0)
+						platform->setMode(2);
+					else
+						platform->setMode(0);
 					break;
 				case 7:
 					platform->setMode(3);
@@ -153,7 +181,9 @@ void Game::update()
 				
 				ability->setGet();
 			}
-			
+
+			if (ability->getFall())
+				ability.release();
 			
 		}
 		

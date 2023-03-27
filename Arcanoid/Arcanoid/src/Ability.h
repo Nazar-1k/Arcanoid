@@ -11,24 +11,28 @@ public:
 
 	
 	void draw();
-	void update();
+	void update(int S_height);
 
 	bool isGet() const { return get; };
 	void setGet() { get = true; }
 
+	bool getFall() const { return fall; }
 	int getMode() const { return modeAbility; }
-
+	static int getStopAbility() { return StopAbility; }
 private:
+
 	const float speedAbility = 2;
 
+	bool fall = false;
 	bool get;
+	static bool StopAbility;
 
 	// 0 - 3balls, 1 - Big ball, 2 - Small ball , 3 - Faster speed balls, 4 - Slowest speed balls, 5 - longest platform, 6 - shorter platform, 7 - shot platform, 8 - Redline
 	int modeAbility;
 	static int priviosAbility;
 
 
-	std::unique_ptr<Timer> timer;
+	Timer timer;
 	SDL_Renderer* renderer;
 };
 

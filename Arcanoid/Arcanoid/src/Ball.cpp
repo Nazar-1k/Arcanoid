@@ -8,10 +8,10 @@
 #pragma endregion
 
 
-Ball::Ball(float x, float y, SDL_Renderer* renderer)
+Ball::Ball(float x, float y, SDL_Renderer* renderer, float dx, float dy, bool isActive)
 	:Sprite("data/Balls/BigBall.png", renderer),
-	dx(0), dy(0), sizeBall(2),
-	isActive(false)
+	dx(dx), dy(dy), sizeBall(2),
+	isActive(isActive)
 {
 	/*this->renderer = renderer;*/
 	/*initSprite(pathBall, this->renderer);*/
@@ -20,8 +20,12 @@ Ball::Ball(float x, float y, SDL_Renderer* renderer)
 	this->x = x;
 
 	angle = 30 + rand() % (150 - 31) * M_PI / 180;
-	dx = static_cast<float>(sin(angle));
-	dy = static_cast<float>(-cos(angle));
+	if (dx == 0 or dy == 0)
+	{
+		this->dx = static_cast<float>(sin(angle));
+		this->dy = static_cast<float>(-cos(angle));
+	}
+	
 	
 	countBall++;
 }
@@ -134,14 +138,14 @@ bool Ball::CheckSideCollision(float x_, float y_, int width_, int height_)
 	if (CheckCollision(x_, y_, width_, height_)) {
 
 		// Check if ball is moving towards the left side of the block
-		if (dx > 0 && x + width / 2 >= x_ - width_ / 2 && x - width / 2 < x_ - width_ / 2)
+		if (dx > 0 && x + width / 2 + 2 >= x_ - width_ / 2 && x - width / 2 - 2 < x_ - width_ / 2)
 		{
 			reverseDirectionX();
 			return true;
 		}
 
 		// Check if ball is moving towards the right side of the block
-		if (dx < 0 && x - width / 2 <= x_ + width_ / 2 && x + width / 2 > x_ + width_ / 2)
+		if (dx < 0 && x - width / 2 - 2 <= x_ + width_ / 2 && x + width / 2 + 2> x_ + width_ / 2)
 		{
 			reverseDirectionX();
 			return true;

@@ -6,7 +6,7 @@ class Ball : public Sprite
 {
 public:
 
-	Ball(float x, float y, SDL_Renderer* renderer);
+	Ball(float x, float y, SDL_Renderer* renderer, float dx = 0, float dy = 0, bool isActive = false);
 	~Ball();
 
 	void draw();

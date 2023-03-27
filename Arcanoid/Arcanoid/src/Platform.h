@@ -15,6 +15,7 @@ public:
 
 	void render();
 
+	int getMode()const { return platformMode; }
 	void setMode(int mode);
 
 	float getX() const { return x; }
