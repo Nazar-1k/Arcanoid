@@ -130,13 +130,13 @@ void Game::update()
 								break;
 							}
 						
-						for (auto& ball : balls)
+						/*for (auto& ball : balls)
 							if (ball)
 							{
-								balls.push_back(std::unique_ptr<Ball>(new Ball{ ball->getX(), ball->getY() - ball->getHeight() / 2, renderer, static_cast<float>(sin(135 * M_PI / 180)), static_cast<float>(-cos(135 * M_PI / 180)), true }));
+								balls.push_back(std::unique_ptr<Ball>(new Ball{ ball->getX(), ball->getY() - ball->getHeight() / 2, renderer, static_cast<float>(-cos(135 * M_PI / 180), static_cast<float>(sin(135 * M_PI / 180))), true }));
 								break;
 							}
-								
+								*/
 					}
 					break;
 				case 1:
@@ -641,6 +641,7 @@ void Game::restartGame(int level)
 	start = false;
 	stop = true;
 
+	Ability::setStopAbility(false);
 	platform->setMode(0);
 
 	balls.push_back(std::unique_ptr<Ball>(new Ball{ platform->getX(), platform->getY() - platform->getHeight() / 2, renderer }));

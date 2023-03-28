@@ -88,7 +88,7 @@ void Ability::update(int S_height)
 	{
 		timer.start();
 	}
-	std::cout << timer.getTicks() << std::endl;
+	/*std::cout << timer.getTicks() << std::endl;*/
 	if (timer.getTicks() <= 10'000)
 		StopAbility = true;
 	else 

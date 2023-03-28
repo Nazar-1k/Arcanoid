@@ -55,5 +55,6 @@ private:
 	int sizeBall;
 
 	bool isActive;
+	static bool fall;
 };
 

@@ -22,8 +22,8 @@ Ball::Ball(float x, float y, SDL_Renderer* renderer, float dx, float dy, bool is
 	angle = 30 + rand() % (150 - 31) * M_PI / 180;
 	if (dx == 0 or dy == 0)
 	{
-		this->dx = static_cast<float>(sin(angle));
-		this->dy = static_cast<float>(-cos(angle));
+		this->dy = static_cast<float>(sin(angle));
+		this->dx = static_cast<float>(-cos(angle));
 	}
 	
 	
@@ -32,6 +32,8 @@ Ball::Ball(float x, float y, SDL_Renderer* renderer, float dx, float dy, bool is
 
 Ball::~Ball()
 {
+	std::cout << "delete" << std::endl;;
+	
 	countBall--;
 }
 
@@ -39,9 +41,20 @@ void Ball::startSet(Ball& ball)
 {
 	if (countlife == 0)
 		countlife = 3;
-	else
-		countlife--;
-		
+	else if (countBall > 1)
+	{
+			countlife--;
+	}
+	else if(countBall == 1)
+	{
+		if (fall)
+		{
+			countlife--;
+		}
+	}
+
+
+	fall = false;
 	ball.isActive = false;
 	ball.SetSizeBall(2);
 	ball.speedBall = Ball::startSpeed;
@@ -91,16 +104,19 @@ void Ball::update(float x_platform, float y_platform, int sWidth, int sHeight)
 
 			if (y + height / 2 > sHeight + height)
 			{
-				if (countBall > 1)
-				{
-					this->~Ball();
-				}
-
-				else if (countBall == 1)
+				if (countBall == 1)
 				{
 					startSet(*this);
+					fall = true;
 				}
+				else
+				{
+					this->~Ball();
+					fall = false;
+				}
+
 			}
+			
 
 		#pragma endregion 
 	}
@@ -211,3 +227,5 @@ double Ball::speedBall = 4;
 
 int Ball::countlife = 3;
 int Ball::countBall = 0;
+
+bool Ball::fall = false;

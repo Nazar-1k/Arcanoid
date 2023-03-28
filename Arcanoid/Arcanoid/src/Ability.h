@@ -19,6 +19,7 @@ public:
 	bool getFall() const { return fall; }
 	int getMode() const { return modeAbility; }
 	static int getStopAbility() { return StopAbility; }
+	static void setStopAbility(bool StopAb) {  StopAbility = StopAb; }
 private:
 
 	const float speedAbility = 2;
