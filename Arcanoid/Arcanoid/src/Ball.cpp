@@ -32,13 +32,15 @@ Ball::Ball(float x, float y, SDL_Renderer* renderer, float dx, float dy, bool is
 
 Ball::~Ball()
 {
-	std::cout << "delete" << std::endl;;
+	/*std::cout << "delete" << std::endl;;*/
 	
 	countBall--;
+	deleteBall = true;
 }
 
 void Ball::startSet(Ball& ball)
 {
+
 	if (countlife == 0)
 		countlife = 3;
 	else if (countBall > 1)
@@ -106,14 +108,13 @@ void Ball::update(float x_platform, float y_platform, int sWidth, int sHeight)
 			{
 				if (countBall == 1)
 				{
-					startSet(*this);
 					fall = true;
+					startSet(*this);
 				}
 				else
-				{
 					this->~Ball();
-					fall = false;
-				}
+					
+			
 
 			}
 			

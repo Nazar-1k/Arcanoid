@@ -37,6 +37,7 @@ public:
 
 	static void setSpeed(float speed) { speedBall += speedBall * speed; }
 
+	bool deleteBall = false;
 private:
 	float dx, dy;
 	double angle;

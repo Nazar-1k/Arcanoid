@@ -110,7 +110,7 @@ void Game::update()
 		#pragma region Ability
 
 
-
+	/*	std::cout << balls.size()<<" "<< Ball::getCountBall() << std::endl;*/
 		if (ability)
 		{
 			
@@ -123,11 +123,13 @@ void Game::update()
 				case 0:
 					if (!ability->isGet())
 					{
-						for (auto& ball : balls)
-							if (ball)
+						int sizeBallsVector = balls.size();
+						
+						for (int  i = 0; i < sizeBallsVector; i++)
+							if (balls[i])
 							{
-								balls.push_back(std::unique_ptr<Ball>(new Ball{ ball->getX(), ball->getY() - ball->getHeight() / 2, renderer, static_cast<float>(sin(45 * M_PI / 180)), static_cast<float>(-cos(45 * M_PI / 180)), true }));
-								break;
+								balls.push_back(std::unique_ptr<Ball>(new Ball{ balls[i]->getX(), balls[i]->getY() - balls[i]->getHeight() / 2, renderer, static_cast<float>(sin(45 * M_PI / 180)), static_cast<float>(-cos(45 * M_PI / 180)), true }));
+								balls.push_back(std::unique_ptr<Ball>(new Ball{ balls[i]->getX(), balls[i]->getY() - balls[i]->getHeight() / 2, renderer, static_cast<float>(sin(-45 * M_PI / 180)), static_cast<float>(-cos(-45 * M_PI / 180)), true }));
 							}
 						
 						/*for (auto& ball : balls)
@@ -187,8 +189,9 @@ void Game::update()
 			
 		}
 		
-			
-
+		balls.erase(std::remove_if(balls.begin(), balls.end(), [](const auto& ball) {
+			return ball->deleteBall;
+			}), balls.end());
 		#pragma endregion
 	}
 
