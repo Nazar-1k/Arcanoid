@@ -25,7 +25,7 @@
 #pragma endregion
 
 Ability::Ability(float x, float y, SDL_Renderer* renderer)
-	:modeAbility(0), renderer(renderer),
+	:modeAbility(rand() % 9), renderer(renderer),
 	get(false)
 {
 	switch (modeAbility)
@@ -51,7 +51,6 @@ Ability::Ability(float x, float y, SDL_Renderer* renderer)
 	case 6: 
 		initSprite(pathShorterPlatform, renderer);
 		break;
-
 	case 7:
 		initSprite(pathShotPlatform, renderer);
 		break;
@@ -69,6 +68,7 @@ Ability::Ability(float x, float y, SDL_Renderer* renderer)
 
 Ability::~Ability()
 {
+	RedLine = false;
 	renderer = nullptr;
 	SDL_DestroyRenderer(renderer);
 	priviosAbility = modeAbility;
@@ -88,11 +88,17 @@ void Ability::update(int S_height)
 	{
 		timer.start();
 	}
-	/*std::cout << timer.getTicks() << std::endl;*/
+
+	if (modeAbility == 8 and get)
+		RedLine = true;
+	
 	if (timer.getTicks() <= 10'000)
 		StopAbility = true;
-	else 
+	else
+	{
 		StopAbility = false;
+		RedLine = false;
+	}
 
 	if (y >= S_height and get == false)
 	{
@@ -103,3 +109,4 @@ void Ability::update(int S_height)
 
 int  Ability::priviosAbility = -1;
 bool Ability::StopAbility = false;
+bool  Ability::RedLine = false;

@@ -20,6 +20,7 @@ public:
 	int getMode() const { return modeAbility; }
 	static int getStopAbility() { return StopAbility; }
 	static void setStopAbility(bool StopAb) {  StopAbility = StopAb; }
+	static bool getRedLine() { return RedLine; }
 private:
 
 	const float speedAbility = 2;
@@ -27,6 +28,7 @@ private:
 	bool fall = false;
 	bool get;
 	static bool StopAbility;
+	static bool RedLine;
 
 	// 0 - 3balls, 1 - Big ball, 2 - Small ball , 3 - Faster speed balls, 4 - Slowest speed balls, 5 - longest platform, 6 - shorter platform, 7 - shot platform, 8 - Redline
 	int modeAbility;

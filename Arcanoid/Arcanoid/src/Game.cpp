@@ -32,9 +32,10 @@ void Game::update()
 		platform->update(SCREEN_WIDTH, SCREEN_HEIGHT);
 
 		#pragma region Balls
+		if(!stop)
 			for (auto& ball : balls)
 			{
-				ball->update(platform->getX(), platform->getY() - platform->getHeight() / 2, SCREEN_WIDTH, SCREEN_HEIGHT);
+				ball->update(platform->getX(), platform->getY() - platform->getHeight() / 2, SCREEN_WIDTH, SCREEN_HEIGHT, Ability::getRedLine());
 
 				//platform Collision
 				ball->CheckSideCollision(platform->getX(), platform->getY(), platform->getWidth(), platform->getHeight());
@@ -72,10 +73,13 @@ void Game::update()
 						break;
 				
 				}	
+				
+
 			}
 		#pragma endregion
 
 		#pragma region MoveBlocks
+		if (!stop)
 		if (!moveBlocks.empty())
 			for (auto& moveBlock : moveBlocks)
 			{
@@ -111,6 +115,7 @@ void Game::update()
 
 
 	/*	std::cout << balls.size()<<" "<< Ball::getCountBall() << std::endl;*/
+		if (!stop)
 		if (ability)
 		{
 			
@@ -123,22 +128,14 @@ void Game::update()
 				case 0:
 					if (!ability->isGet())
 					{
-						int sizeBallsVector = balls.size();
-						
-						for (int  i = 0; i < sizeBallsVector; i++)
+						size_t sizeBallsVector = balls.size();
+						for (size_t  i = 0; i < sizeBallsVector; i++)
 							if (balls[i])
 							{
-								balls.push_back(std::unique_ptr<Ball>(new Ball{ balls[i]->getX(), balls[i]->getY() - balls[i]->getHeight() / 2, renderer, static_cast<float>(sin(45 * M_PI / 180)), static_cast<float>(-cos(45 * M_PI / 180)), true }));
-								balls.push_back(std::unique_ptr<Ball>(new Ball{ balls[i]->getX(), balls[i]->getY() - balls[i]->getHeight() / 2, renderer, static_cast<float>(sin(-45 * M_PI / 180)), static_cast<float>(-cos(-45 * M_PI / 180)), true }));
+								balls.push_back(std::unique_ptr<Ball>(new Ball{ balls[i]->getX(), balls[i]->getY() - balls[i]->getHeight() / 2, renderer, static_cast<float>(sin(45 * M_PI / 180)), static_cast<float>(-cos(45 * M_PI / 180)), true, Ball::getSizeBall() }));
+								balls.push_back(std::unique_ptr<Ball>(new Ball{ balls[i]->getX(), balls[i]->getY() - balls[i]->getHeight() / 2, renderer, static_cast<float>(sin(-45 * M_PI / 180)), static_cast<float>(-cos(-45 * M_PI / 180)), true, Ball::getSizeBall() }));
 							}
-						
-						/*for (auto& ball : balls)
-							if (ball)
-							{
-								balls.push_back(std::unique_ptr<Ball>(new Ball{ ball->getX(), ball->getY() - ball->getHeight() / 2, renderer, static_cast<float>(-cos(135 * M_PI / 180), static_cast<float>(sin(135 * M_PI / 180))), true }));
-								break;
-							}
-								*/
+
 					}
 					break;
 				case 1:
@@ -151,10 +148,10 @@ void Game::update()
 						ball->SetSizeBall(1);
 					break;
 				case 3:
-					Ball::setSpeed(0.1);
+					Ball::setSpeed(0.1f);
 					break;
 				case 4:
-					Ball::setSpeed(-0.1);
+					Ball::setSpeed(-0.1f);
 					break;
 				case 5:
 					if (platform->getMode() == 1 or platform->getMode() == 0)
@@ -172,10 +169,7 @@ void Game::update()
 					platform->setMode(3);
 					break;
 				case 8:
-
 					break;
-
-
 
 				default:
 					break;
@@ -187,14 +181,15 @@ void Game::update()
 			if (ability->getFall())
 				ability.release();
 			
+			balls.erase(std::remove_if(balls.begin(), balls.end(), [](const auto& ball) {
+				return ball->getDeleteBall();
+				}), balls.end());
 		}
 		
-		balls.erase(std::remove_if(balls.begin(), balls.end(), [](const auto& ball) {
-			return ball->deleteBall;
-			}), balls.end());
+		
 		#pragma endregion
 	}
-
+	
 }
 
 void Game::render()
@@ -225,12 +220,19 @@ void Game::render()
 		
 		if (ability)
 			ability->draw();
-		
+		if (Ability::getRedLine())
+		{
+			SDL_SetRenderDrawColor(renderer, 255, 0, 0, 100);
+			SDL_RenderFillRect(renderer, &rect_line);
+
+		}
+
+
 		renderUI();
 		renderStopMenu();
 	}
 
-	cursor->render(SCREEN_WIDTH, SCREEN_HEIGHT);
+		cursor->render(SCREEN_WIDTH,SCREEN_HEIGHT);
 
 	SDL_RenderPresent(renderer);
 }

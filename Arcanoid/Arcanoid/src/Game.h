@@ -90,6 +90,8 @@ private:
 
 		std::unique_ptr<Ability> ability;
 
+		SDL_Rect rect_line = {0, SCREEN_HEIGHT - 30, SCREEN_WIDTH, 2};
+
 
 	#pragma endregion
 

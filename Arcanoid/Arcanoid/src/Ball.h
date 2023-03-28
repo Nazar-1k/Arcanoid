@@ -6,17 +6,17 @@ class Ball : public Sprite
 {
 public:
 
-	Ball(float x, float y, SDL_Renderer* renderer, float dx = 0, float dy = 0, bool isActive = false);
+	Ball(float x, float y, SDL_Renderer* renderer, float dx = 0, float dy = 0, bool isActive = false, int SizeBall = 2);
 	~Ball();
 
 	void draw();
 
-	void update(float x_platform, float y_platform, int sWidth, int sHeight);
+	void update(float x_platform, float y_platform, int sWidth, int sHeight, bool activeRedLine);
 
 	void poolEvent(SDL_Event& event);
 
 	void SetSizeBall(int size);
-	int getSizeBall()const { return sizeBall; }
+	static int getSizeBall() { return sizeBall; }
 
 	void reduceSpeed() { speedBall -= speedBall * 0.1; }
 	void increaseSpeed(int speed) {  speedBall += speed; }
@@ -37,8 +37,10 @@ public:
 
 	static void setSpeed(float speed) { speedBall += speedBall * speed; }
 
-	bool deleteBall = false;
+	bool getDeleteBall()const { return deleteBall; }
+
 private:
+	bool deleteBall = false;
 	float dx, dy;
 	double angle;
 
@@ -48,12 +50,12 @@ private:
 	static double speedBall;
 
 	static const double startSpeed;
-	const double maxSpeedBall = startSpeed * 3 ;
-	const double minSpeedBall = startSpeed * 0.4;
+	const double maxSpeedBall = startSpeed * 2 ;
+	const double minSpeedBall = 4 ;
 
 	//size 
 	// 1 - small, 2 - medium, 3 - big  
-	int sizeBall;
+	static int sizeBall;
 
 	bool isActive;
 	static bool fall;

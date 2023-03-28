@@ -8,9 +8,9 @@
 #pragma endregion
 
 
-Ball::Ball(float x, float y, SDL_Renderer* renderer, float dx, float dy, bool isActive)
+Ball::Ball(float x, float y, SDL_Renderer* renderer, float dx, float dy, bool isActive, int SizeBall)
 	:Sprite("data/Balls/BigBall.png", renderer),
-	dx(dx), dy(dy), sizeBall(2),
+	dx(dx), dy(dy),
 	isActive(isActive)
 {
 	/*this->renderer = renderer;*/
@@ -26,7 +26,7 @@ Ball::Ball(float x, float y, SDL_Renderer* renderer, float dx, float dy, bool is
 		this->dx = static_cast<float>(-cos(angle));
 	}
 	
-	
+	sizeBall = SizeBall ;
 	countBall++;
 }
 
@@ -71,7 +71,7 @@ void Ball::draw()
 	render_();
 }
 
-void Ball::update(float x_platform, float y_platform, int sWidth, int sHeight)
+void Ball::update(float x_platform, float y_platform, int sWidth, int sHeight, bool activeRedLine)
 {
 	if (isActive)
 	{
@@ -92,6 +92,11 @@ void Ball::update(float x_platform, float y_platform, int sWidth, int sHeight)
 				dy *= -1;
 			}
 
+			if (activeRedLine and y + height / 2 > sHeight - 30)
+			{
+				dy *= -1;
+			}
+
 		#pragma endregion
 
 		#pragma region SpeedBall
@@ -104,6 +109,8 @@ void Ball::update(float x_platform, float y_platform, int sWidth, int sHeight)
 
 		#pragma region loseLife	
 
+			
+
 			if (y + height / 2 > sHeight + height)
 			{
 				if (countBall == 1)
@@ -113,9 +120,6 @@ void Ball::update(float x_platform, float y_platform, int sWidth, int sHeight)
 				}
 				else
 					this->~Ball();
-					
-			
-
 			}
 			
 
@@ -222,11 +226,12 @@ void Ball::SetSizeBall(int size)
 
 }
 
-const double Ball::startSpeed = 4;
+const double Ball::startSpeed = 5;
 
-double Ball::speedBall = 4;
+double Ball::speedBall = 5;
 
 int Ball::countlife = 3;
 int Ball::countBall = 0;
 
 bool Ball::fall = false;
+int Ball::sizeBall = 2;
