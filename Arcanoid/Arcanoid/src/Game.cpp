@@ -53,7 +53,7 @@ void Game::update()
 								ability = std::unique_ptr<Ability>( new Ability{ block->getX(), block->getY(), renderer });
 
 							
-							block->destroyB(ball->getSizeBall());
+							block->destroyB(Ball::getSizeBall());
 							ball->reduceSpeed();
 							break;
 						}
@@ -71,7 +71,6 @@ void Game::update()
 
 					if (ball->CheckEdgeCollision(block->getX(), block->getY(), block->getWidth(), block->getHeight()))
 						break;
-				
 				}	
 				
 
@@ -111,14 +110,43 @@ void Game::update()
 
 		#pragma endregion
 
+
+		#pragma region Bullet
+
+		if (Bullet::getIsNextShot() and platform->getMode() == 3)
+			bullets.push_back(std::unique_ptr<Bullet>(new Bullet{ renderer, platform->getX(), platform->getY(), platform->getWidth() }));
+
+		for (auto& bullet : bullets)
+		{
+			for (auto& block : blocks->getVector())
+			{
+				if (!block->isDestroy())
+					if (bullet)
+					{
+						if (block->checkColission(bullet->getLeftX(), bullet->getLeftY(), bullet->getWidth(), bullet->getHeight()))
+						{
+							block->destroyB(Ball::getSizeBall());
+							bullet->leftDestroy();
+						}
+
+						if (block->checkColission(bullet->getRightX(), bullet->getRightY(), bullet->getWidth(), bullet->getHeight()))
+						{
+							block->destroyB(Ball::getSizeBall());
+							bullet->rigthDestroy();
+						}
+					}
+			}
+		}
+		
+		#pragma endregion
+
 		#pragma region Ability
 
-
-	/*	std::cout << balls.size()<<" "<< Ball::getCountBall() << std::endl;*/
 		if (!stop)
 		if (ability)
 		{
-			
+
+
 			ability->update(SCREEN_HEIGHT);
 
 			if (platform->check_collision(ability->getX(), ability->getY(), ability->getWidth(), ability->getHeight()))
@@ -160,7 +188,7 @@ void Game::update()
 						platform->setMode(0);
 					break;
 				case 6:
-					if (platform->getMode() == 1 or platform->getMode() == 0)
+					if (platform->getMode() == 0)
 						platform->setMode(2);
 					else
 						platform->setMode(0);
@@ -186,7 +214,12 @@ void Game::update()
 				}), balls.end());
 		}
 		
-		
+
+		for (auto& bullet : bullets)
+		{
+			if(bullet)
+				bullet->update();
+		}
 		#pragma endregion
 	}
 	
@@ -227,6 +260,11 @@ void Game::render()
 
 		}
 
+		for (auto& bullet : bullets)
+		{
+			if (bullet)
+			bullet->draw();
+		}
 
 		renderUI();
 		renderStopMenu();
@@ -676,7 +714,14 @@ void Game::deleteObject()
 		ball.release();
 	}
 	balls.erase(balls.begin(), balls.end());
-	
-	
+
+	std::cout << bullets.size();
+	for (auto& bullet : bullets)
+	{
+		bullet->~Bullet();
+		bullet.release();
+	}
+	bullets.erase(bullets.begin(), bullets.end());
+	std::cout << bullets.size();
 	
 }

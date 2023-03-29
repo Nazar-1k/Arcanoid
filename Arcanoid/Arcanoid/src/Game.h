@@ -8,6 +8,7 @@
 #include "Platform.h"
 #include "Ball.h"
 #include "Ability.h"
+#include "Bullet.h"
 
 #include <SDL_mixer.h>
 
@@ -90,6 +91,11 @@ private:
 
 		std::unique_ptr<Ability> ability;
 
+
+		
+		std::vector<std::unique_ptr<Bullet>> bullets;
+
+		//RedLine
 		SDL_Rect rect_line = {0, SCREEN_HEIGHT - 30, SCREEN_WIDTH, 2};
 
 

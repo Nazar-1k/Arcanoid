@@ -34,6 +34,11 @@ public:
 		}
 
 	};
+	bool checkColission(float x, float y, int height, int width)
+	{
+		return this->x + getWidth() / 2 > x - width / 2 && this->x - getWidth() / 2 < x + width / 2
+			&& this->y + getHeight() / 2 >= y - height / 2 && this->y - getHeight() / 2 <= y + height / 2;
+	}
 
 protected:
 	void initBlock();

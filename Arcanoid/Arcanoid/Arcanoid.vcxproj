@@ -23,6 +23,7 @@
     <ClCompile Include="src\Ball.cpp" />
     <ClCompile Include="src\ArrayBlocks.cpp" />
     <ClCompile Include="src\Block.cpp" />
+    <ClCompile Include="src\Bullet.cpp" />
     <ClCompile Include="src\MoveBlock.cpp" />
     <ClCompile Include="src\Platform.cpp" />
     <ClCompile Include="src\Button.cpp" />
@@ -35,6 +36,7 @@
     <ClCompile Include="src\Text.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Bullet.h" />
     <ClInclude Include="src\Ability.h" />
     <ClInclude Include="src\Ball.h" />
     <ClInclude Include="src\MoveBlock.h" />
