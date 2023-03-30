@@ -80,9 +80,10 @@ void Ability::draw()
 		render_();
 }
 
-void Ability::update(int S_height, std::vector<std::unique_ptr<Ball>>&& balls, std::unique_ptr<Platform>&& platform)
+void Ability::update(int S_height, std::vector<std::unique_ptr<Ball>>&& balls, std::unique_ptr<Platform>&& platform, bool stop)
 {
-	y += speedAbility;
+	if (!stop)
+		y += speedAbility;
 
 	if (!get)
 	{
@@ -91,7 +92,13 @@ void Ability::update(int S_height, std::vector<std::unique_ptr<Ball>>&& balls, s
 
 	if (modeAbility == 8 and get)
 		RedLine = true;
-	std::cout << timer.getTicks() << std::endl;
+
+	if (stop)
+		timer.pause();
+	else
+		timer.unpause();
+	
+
 	if (timer.getTicks() <= 10'000)
 		StopAbility = true;
 	else

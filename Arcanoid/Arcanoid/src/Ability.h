@@ -14,7 +14,7 @@ public:
 
 	
 	void draw();
-	void update(int S_height, std::vector<std::unique_ptr<Ball>>&& balls, std::unique_ptr<Platform>&& platform);
+	void update(int S_height, std::vector<std::unique_ptr<Ball>>&& balls, std::unique_ptr<Platform>&& platform, bool stops);
 
 	bool isGet() const { return get; };
 	void setGet() { get = true; }

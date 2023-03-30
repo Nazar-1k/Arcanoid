@@ -100,51 +100,53 @@ void Game::update()
 		#pragma endregion 
 
 		#pragma region Level	
-		blocks->update();
 
-		if (blocks->isEmpty())
-		{
-			if (level < 10)
+			blocks->update();
+
+			if (blocks->isEmpty())
 			{
-				level++;
-				restartGame();
+				if (level < 10)
+				{
+					level++;
+					restartGame();
+				}
+				else
+				{
+					win = true;
+					start = false;
+					stop = true;
+					restartGame(1);
+				}
 			}
-			else
-			{
-				win = true;
-				start = false;
-				stop = true;
-				restartGame(1);
-			}
-		}
 
 		#pragma endregion
 
-
 		#pragma region Bullet
-
-		if (Bullet::getIsNextShot() and platform->getMode() == 3)
-			bullets.push_back(std::unique_ptr<Bullet>(new Bullet{ renderer, platform->getX(), platform->getY(), platform->getWidth() }));
-
-		for (auto& bullet : bullets)
+		if (!stop)
 		{
-			for (auto& block : blocks->getVector())
-			{
-				if (!block->isDestroy())
-					if (bullet)
-					{
-						if (block->checkColission(bullet->getLeftX(), bullet->getLeftY(), bullet->getWidth(), bullet->getHeight()))
-						{
-							block->destroyB(Ball::getSizeBall());
-							bullet->leftDestroy();
-						}
+			if (Bullet::getIsNextShot() and platform->getMode() == 3)
+				bullets.push_back(std::unique_ptr<Bullet>(new Bullet{ renderer, platform->getX(), platform->getY(), platform->getWidth() }));
 
-						if (block->checkColission(bullet->getRightX(), bullet->getRightY(), bullet->getWidth(), bullet->getHeight()))
+			for (auto& bullet : bullets)
+			{
+				for (auto& block : blocks->getVector())
+				{
+					if (!block->isDestroy())
+						if (bullet)
 						{
-							block->destroyB(Ball::getSizeBall());
-							bullet->rigthDestroy();
+							if (block->checkColission(bullet->getLeftX(), bullet->getLeftY(), bullet->getWidth(), bullet->getHeight()))
+							{
+								block->destroyB(Ball::getSizeBall());
+								bullet->leftDestroy();
+							}
+
+							if (block->checkColission(bullet->getRightX(), bullet->getRightY(), bullet->getWidth(), bullet->getHeight()))
+							{
+								block->destroyB(Ball::getSizeBall());
+								bullet->rigthDestroy();
+							}
 						}
-					}
+				}
 			}
 		}
 		
@@ -152,12 +154,12 @@ void Game::update()
 
 		#pragma region Ability
 
-		if (!stop)
+		
 		if (ability)
 		{
 
 
-			ability->update(SCREEN_HEIGHT, std::move(balls), std::move(platform));
+			ability->update(SCREEN_HEIGHT, std::move(balls), std::move(platform), stop);
 
 			if (platform->check_collision(ability->getX(), ability->getY(), ability->getWidth(), ability->getHeight()))
 			{
