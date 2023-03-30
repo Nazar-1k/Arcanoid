@@ -91,7 +91,7 @@ void Ability::update(int S_height, std::vector<std::unique_ptr<Ball>>&& balls, s
 
 	if (modeAbility == 8 and get)
 		RedLine = true;
-	
+	std::cout << timer.getTicks() << std::endl;
 	if (timer.getTicks() <= 10'000)
 		StopAbility = true;
 	else

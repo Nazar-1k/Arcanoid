@@ -130,6 +130,8 @@ private:
 	#pragma region GameOver
 
 		std::unique_ptr<Text> GameOverText;
+		std::unique_ptr<Text> CongratulationText;
+		bool win;
 
 		bool gameOver;
 

@@ -5,7 +5,7 @@ Game::Game()
 	SCREEN_WIDTH(700), SCREEN_HEIGHT(800), quit(false),
 	window(nullptr), renderer(nullptr), icon(nullptr), e(),
 	MenuBG{ 0,0,0,0 },
-	start(false), stop(true), gameOver(false),
+	start(false), stop(true), gameOver(false), win(false),
 	level(1)
 {
 }
@@ -104,8 +104,18 @@ void Game::update()
 
 		if (blocks->isEmpty())
 		{
-			level++;
-			restartGame();
+			if (level < 10)
+			{
+				level++;
+				restartGame();
+			}
+			else
+			{
+				win = true;
+				start = false;
+				stop = true;
+				restartGame(1);
+			}
 		}
 
 		#pragma endregion
@@ -526,7 +536,9 @@ bool Game::initeText()
 
 	GameOverText = std::unique_ptr<Text>(new Text{ SCREEN_WIDTH / 2, MenuBG.y + 100, renderer, "Game Over", 60, { 250, 150, 150, 255 } });
 
-	if (!startText or !PauseText)
+	CongratulationText = std::unique_ptr<Text>(new Text{ SCREEN_WIDTH / 2, MenuBG.y + 100, renderer, "Congratulation", 45, { 250, 150, 150, 255 } });
+
+	if (!startText.get() or !PauseText.get() or !GameOverText.get() or !CongratulationText.get())
 		return false;
 	return true;
 }
@@ -579,6 +591,11 @@ void Game::renderStartText()
 		{
 			GameOverText->draw();
 		}
+		else if (win)
+		{
+			CongratulationText->draw();
+		}
+		
 
 		startText->draw();
 		startText->setAlpha(animationAlfa);
@@ -589,6 +606,7 @@ void Game::renderStartText()
 			animationAlfa -= 3;
 
 	}
+	
 }
 
 void  Game::renderUI()
