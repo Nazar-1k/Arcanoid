@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Sprite.h"
+#include "Timer.h"
 
 class Ball : public Sprite
 {
@@ -59,5 +60,6 @@ private:
 
 	bool isActive;
 	static bool fall;
+	Timer timer;
 };
 

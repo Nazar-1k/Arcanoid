@@ -147,7 +147,7 @@ void Game::update()
 		{
 
 
-			ability->update(SCREEN_HEIGHT);
+			ability->update(SCREEN_HEIGHT, std::move(balls), std::move(platform));
 
 			if (platform->check_collision(ability->getX(), ability->getY(), ability->getWidth(), ability->getHeight()))
 			{
@@ -715,7 +715,6 @@ void Game::deleteObject()
 	}
 	balls.erase(balls.begin(), balls.end());
 
-	std::cout << bullets.size();
 	for (auto& bullet : bullets)
 	{
 		bullet->~Bullet();

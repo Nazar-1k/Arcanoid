@@ -28,6 +28,7 @@ Ball::Ball(float x, float y, SDL_Renderer* renderer, float dx, float dy, bool is
 	
 	sizeBall = SizeBall ;
 	countBall++;
+	timer.start();
 }
 
 Ball::~Ball()
@@ -147,6 +148,7 @@ void Ball::poolEvent(SDL_Event& event)
 
 bool Ball::CheckCollision(float x_, float y_, int width_, int height_) const
 {
+	
 	return (x + width / 2 > x_ - width_ / 2  &&
 		x - width / 2 < x_ + width_ / 2  &&
 		y + height / 2 > y_ - height_ / 2 &&
@@ -159,16 +161,18 @@ bool Ball::CheckSideCollision(float x_, float y_, int width_, int height_)
 	if (CheckCollision(x_, y_, width_, height_)) {
 
 		// Check if ball is moving towards the left side of the block
-		if (dx > 0 && x + width / 2 + 2 >= x_ - width_ / 2 && x - width / 2 - 2 < x_ - width_ / 2)
+		if (dx > 0 && x + width / 2 + 2 >= x_ - width_ / 2 && x - width / 2 - 2 < x_ - width_ / 2 and timer.getTicks() >= 100)
 		{
 			reverseDirectionX();
+			timer.start();
 			return true;
 		}
 
 		// Check if ball is moving towards the right side of the block
-		if (dx < 0 && x - width / 2 - 2 <= x_ + width_ / 2 && x + width / 2 + 2> x_ + width_ / 2)
+		if (dx < 0 && x - width / 2 - 2 <= x_ + width_ / 2 && x + width / 2 + 2> x_ + width_ / 2 and timer.getTicks() >= 100)
 		{
 			reverseDirectionX();
+			timer.start();
 			return true;
 		}
 	}
@@ -180,16 +184,18 @@ bool Ball::CheckEdgeCollision(float x_, float y_, int width_, int height_) {
 	if (CheckCollision(x_, y_, width_, height_)) {
 
 		// Check if ball is moving towards the top edge of the block
-		if (dy > 0 && y + width / 2 >= y_ - height_ / 2 && y - width / 2 < y_ - height_ / 2) 
+		if (dy > 0 && y + width / 2 >= y_ - height_ / 2 && y - width / 2 < y_ - height_ / 2)
 		{
 			reverseDirectionY();
+			
 			return true;
 		}
 
 		// Check if ball is moving towards the bottom edge of the block
-		if (dy < 0 && y - width / 2 <= y_ + height_ / 2 && y + width / 2 > y_ + height_ / 2) 
+		if (dy < 0 && y - width / 2 <= y_ + height_ / 2 && y + width / 2 > y_ + height_ / 2)
 		{
 			reverseDirectionY();
+			
 			return true;
 		}
 	}

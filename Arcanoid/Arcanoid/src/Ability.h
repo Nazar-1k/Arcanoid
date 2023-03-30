@@ -2,6 +2,9 @@
 
 #include "Sprite.h"
 #include "Timer.h"
+#include "Ball.h"
+#include <vector>
+#include "Platform.h"
 
 class Ability : public Sprite
 {
@@ -11,7 +14,7 @@ public:
 
 	
 	void draw();
-	void update(int S_height);
+	void update(int S_height, std::vector<std::unique_ptr<Ball>>&& balls, std::unique_ptr<Platform>&& platform);
 
 	bool isGet() const { return get; };
 	void setGet() { get = true; }

@@ -61,4 +61,5 @@ protected:
 	bool destroyBlock;
 
 	SDL_Renderer* renderer;
+	
 };

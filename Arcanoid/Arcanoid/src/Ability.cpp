@@ -80,7 +80,7 @@ void Ability::draw()
 		render_();
 }
 
-void Ability::update(int S_height)
+void Ability::update(int S_height, std::vector<std::unique_ptr<Ball>>&& balls, std::unique_ptr<Platform>&& platform)
 {
 	y += speedAbility;
 
@@ -98,12 +98,19 @@ void Ability::update(int S_height)
 	{
 		StopAbility = false;
 		RedLine = false;
+
+		for (auto& ball : balls)
+			ball->SetSizeBall(2);
+
+		platform->setMode(0);
 	}
 
 	if (y >= S_height and get == false)
 	{
 		fall = true;
 		StopAbility = false;
+
+		
 	}
 }
 
