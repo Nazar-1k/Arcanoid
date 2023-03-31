@@ -59,8 +59,6 @@ void MoveBlock::update(int sWidth)
 	if (x + BlockSprite[0]->getWidth() / 2 >= sWidth or x - BlockSprite[0]->getWidth() / 2 <= 0)
 		speadBlock *= -1;
 	
-	
-
 	BlockSprite[0]->setX(x);
 	BlockSprite[0]->setY(y);
 

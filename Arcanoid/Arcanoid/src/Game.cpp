@@ -6,7 +6,7 @@ Game::Game()
 	window(nullptr), renderer(nullptr), icon(nullptr), e(),
 	MenuBG{ 0,0,0,0 },
 	start(false), stop(true), gameOver(false), win(false),
-	level(1)
+	level(6)
 {
 }
 
@@ -65,12 +65,14 @@ void Game::update()
 				if (!moveBlocks.empty())
 				for (auto& block : moveBlocks)
 				{
-					if (ball->CheckSideCollision(block->getX(), block->getY(), block->getWidth(), block->getHeight()))
-						break;
-				
+					if (!block->isDestroy())
+					{
+						if (ball->CheckSideCollision(block->getX(), block->getY(), block->getWidth(), block->getHeight()))
+							break;
 
-					if (ball->CheckEdgeCollision(block->getX(), block->getY(), block->getWidth(), block->getHeight()))
-						break;
+						if (ball->CheckEdgeCollision(block->getX(), block->getY(), block->getWidth(), block->getHeight()))
+							break;
+					}
 				}	
 				
 
@@ -147,14 +149,35 @@ void Game::update()
 							}
 						}
 				}
+
+				for (auto& block : moveBlocks)
+				{
+					if (bullet)
+					{ 
+						
+						if (block->checkColission(bullet->getLeftX(), bullet->getLeftY(), bullet->getWidth(), bullet->getHeight()))
+						{
+							block->destroyB(Ball::getSizeBall());
+							bullet->leftDestroy();
+						}
+
+						if (block->checkColission(bullet->getRightX(), bullet->getRightY(), bullet->getWidth(), bullet->getHeight()))
+						{
+							block->destroyB(Ball::getSizeBall());
+							bullet->rigthDestroy();
+						}
+					}
+						
+				}
 			}
+
 		}
 		
 		#pragma endregion
 
 		#pragma region Ability
 
-		
+
 		if (ability)
 		{
 
@@ -741,6 +764,4 @@ void Game::deleteObject()
 		bullet.release();
 	}
 	bullets.erase(bullets.begin(), bullets.end());
-	std::cout << bullets.size();
-	
 }
