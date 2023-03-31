@@ -25,7 +25,7 @@
 #pragma endregion
 
 Ability::Ability(float x, float y, SDL_Renderer* renderer)
-	:modeAbility(7), renderer(renderer),
+	:modeAbility(rand() % 9), renderer(renderer),
 	get(false)
 {
 	switch (modeAbility)

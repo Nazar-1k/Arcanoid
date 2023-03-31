@@ -6,7 +6,7 @@ Game::Game()
 	window(nullptr), renderer(nullptr), icon(nullptr), e(),
 	MenuBG{ 0,0,0,0 },
 	start(false), stop(true), gameOver(false), win(false),
-	level(6)
+	level(1)
 {
 }
 
@@ -68,10 +68,20 @@ void Game::update()
 					if (!block->isDestroy())
 					{
 						if (ball->CheckSideCollision(block->getX(), block->getY(), block->getWidth(), block->getHeight()))
+						{
+							if (Ball::getSizeBall() == 3)
+								block->destroyB(Ball::getSizeBall());
+							ball->reduceSpeed();
 							break;
+						}
 
 						if (ball->CheckEdgeCollision(block->getX(), block->getY(), block->getWidth(), block->getHeight()))
+						{
+							if (Ball::getSizeBall() == 3)
+								block->destroyB(Ball::getSizeBall());
+							ball->reduceSpeed();
 							break;
+						}
 					}
 				}	
 				
