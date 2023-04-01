@@ -18,7 +18,7 @@ Game::Game()
 	MenuBG{ 0,0,0,0 },
 	start(false), stop(true), gameOver(false), win(false),
 	level(1),
-	Shot(nullptr), Lose(nullptr), Win(nullptr), TakeAbility(nullptr)
+	Shot(nullptr), Lose(nullptr), Win(nullptr), TakeAbility(nullptr), DestroyBlock(nullptr)
 {
 }
 
