@@ -61,5 +61,9 @@ private:
 	bool isActive;
 	static bool fall;
 	Timer timer;
+
+	Mix_Chunk* Wall;
+	Mix_Chunk* DestroyBlock;
+	Mix_Chunk* Lose;
 };
 

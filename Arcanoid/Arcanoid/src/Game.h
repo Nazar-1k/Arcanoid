@@ -10,7 +10,7 @@
 #include "Ability.h"
 #include "Bullet.h"
 
-#include <SDL_mixer.h>
+
 
 #include "MoveBlock.h"
 #include "ArrayBlocks.h"
@@ -45,6 +45,15 @@ private:
 	bool initButton();
 
 	bool initUI();
+
+	bool initeSound();
+
+	Mix_Chunk* Shot;
+
+	Mix_Chunk* DestroyBlock;
+	Mix_Chunk* Lose;
+	Mix_Chunk* Win;
+	Mix_Chunk* TakeAbility;
 
 	void renderStartText();
 	

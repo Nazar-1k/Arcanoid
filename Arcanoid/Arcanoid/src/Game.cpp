@@ -1,4 +1,15 @@
 #include "Game.h"
+#pragma region SoundEffectPath
+
+static const char pathShot[] = "soundEffects/Shot.wav";
+
+static const char pathLose[] = "soundEffects/Lose.wav";
+static const char pathWin[] = "soundEffects/Win.wav";
+static const char pathTakeAbility[] = "soundEffects/TakeAbility.wav";
+static const char pathDestroyBlock[] = "soundEffects/Block.wav";
+
+#pragma endregion
+
 
 Game::Game()
 	:FPS(100),
@@ -6,7 +17,8 @@ Game::Game()
 	window(nullptr), renderer(nullptr), icon(nullptr), e(),
 	MenuBG{ 0,0,0,0 },
 	start(false), stop(true), gameOver(false), win(false),
-	level(1)
+	level(1),
+	Shot(nullptr), Lose(nullptr), Win(nullptr), TakeAbility(nullptr)
 {
 }
 
@@ -19,7 +31,7 @@ bool Game::init()
 {
 
 	
-    if (!initWindow() or !initeObject() or !initButton() or !initeText() or !initUI())
+    if (!initWindow() or !initeObject() or !initButton() or !initeText() or !initUI() or !initeSound())
         return false;
 	
     return true;
@@ -120,10 +132,12 @@ void Game::update()
 				if (level < 10)
 				{
 					level++;
+					Mix_PlayChannel(-1, Win, 0);
 					restartGame();
 				}
 				else
 				{
+					Mix_PlayChannel(-1, Win, 0);
 					win = true;
 					start = false;
 					stop = true;
@@ -137,7 +151,11 @@ void Game::update()
 		if (!stop)
 		{
 			if (Bullet::getIsNextShot() and platform->getMode() == 3)
+			{
 				bullets.push_back(std::unique_ptr<Bullet>(new Bullet{ renderer, platform->getX(), platform->getY(), platform->getWidth() }));
+				Mix_PlayChannel(-1, Shot, 0);
+			}
+
 
 			for (auto& bullet : bullets)
 			{
@@ -148,12 +166,14 @@ void Game::update()
 						{
 							if (block->checkColission(bullet->getLeftX(), bullet->getLeftY(), bullet->getWidth(), bullet->getHeight()))
 							{
+								Mix_PlayChannel(-1, DestroyBlock, 0);
 								block->destroyB(Ball::getSizeBall());
 								bullet->leftDestroy();
 							}
 
 							if (block->checkColission(bullet->getRightX(), bullet->getRightY(), bullet->getWidth(), bullet->getHeight()))
 							{
+								Mix_PlayChannel(-1, DestroyBlock, 0);
 								block->destroyB(Ball::getSizeBall());
 								bullet->rigthDestroy();
 							}
@@ -167,12 +187,14 @@ void Game::update()
 						
 						if (block->checkColission(bullet->getLeftX(), bullet->getLeftY(), bullet->getWidth(), bullet->getHeight()))
 						{
+							Mix_PlayChannel(-1, DestroyBlock, 0);
 							block->destroyB(Ball::getSizeBall());
 							bullet->leftDestroy();
 						}
 
 						if (block->checkColission(bullet->getRightX(), bullet->getRightY(), bullet->getWidth(), bullet->getHeight()))
 						{
+							Mix_PlayChannel(-1, DestroyBlock, 0);
 							block->destroyB(Ball::getSizeBall());
 							bullet->rigthDestroy();
 						}
@@ -208,7 +230,6 @@ void Game::update()
 								balls.push_back(std::unique_ptr<Ball>(new Ball{ balls[i]->getX(), balls[i]->getY() - balls[i]->getHeight() / 2, renderer, static_cast<float>(sin(45 * M_PI / 180)), static_cast<float>(-cos(45 * M_PI / 180)), true, Ball::getSizeBall() }));
 								balls.push_back(std::unique_ptr<Ball>(new Ball{ balls[i]->getX(), balls[i]->getY() - balls[i]->getHeight() / 2, renderer, static_cast<float>(sin(-45 * M_PI / 180)), static_cast<float>(-cos(-45 * M_PI / 180)), true, Ball::getSizeBall() }));
 							}
-
 					}
 					break;
 				case 1:
@@ -247,7 +268,7 @@ void Game::update()
 				default:
 					break;
 				}
-				
+				Mix_PlayChannel(-1, TakeAbility, 0);
 				ability->setGet();
 			}
 
@@ -618,6 +639,38 @@ bool Game::initUI()
 	return true;
 }
 
+bool Game::initeSound()
+{
+	Shot = Mix_LoadWAV(pathShot);
+	if (Shot == NULL)
+	{
+		printf("Failed to load beat music! SDL_mixer Error: %s\n", Mix_GetError());
+		return false;
+	}
+	
+	Lose = Mix_LoadWAV(pathLose);
+	if (Lose == NULL)
+	{
+		printf("Failed to load beat music! SDL_mixer Error: %s\n", Mix_GetError());
+		return false;
+	}
+
+	Win = Mix_LoadWAV(pathWin);
+	if (Win == NULL)
+	{
+		printf("Failed to load beat music! SDL_mixer Error: %s\n", Mix_GetError());
+		return false;
+	}
+
+	TakeAbility = Mix_LoadWAV(pathTakeAbility);
+	if (TakeAbility == NULL)
+	{
+		printf("Failed to load beat music! SDL_mixer Error: %s\n", Mix_GetError());
+		return false;
+	}
+	return true;
+}
+
 void Game::renderStartText()
 {
 	if (!start)
@@ -731,7 +784,9 @@ void Game::restartGame(int level)
 {
 	if (level == 1)
 		this->level = 1;
-	
+
+	Mix_PlayChannel(-1, Lose, 0);
+
 	deleteObject();
 
 	start = false;

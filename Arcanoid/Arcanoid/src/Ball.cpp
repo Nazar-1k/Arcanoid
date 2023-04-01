@@ -4,6 +4,11 @@
 #pragma region path
 
 	static const char pathBall[] = "data/Balls/BigBall.png";
+
+	static const char pathWall[] = "soundEffects/Wall.wav";
+	static const char pathDestroyBlock[] = "soundEffects/Block.wav";
+	static const char pathLose[] = "soundEffects/Lose.wav";
+
 	
 #pragma endregion
 
@@ -29,6 +34,24 @@ Ball::Ball(float x, float y, SDL_Renderer* renderer, float dx, float dy, bool is
 	sizeBall = SizeBall ;
 	countBall++;
 	timer.start();
+
+	Wall = Mix_LoadWAV(pathWall);
+	if (Wall == NULL)
+	{
+		printf("Failed to load beat music! SDL_mixer Error: %s\n", Mix_GetError());
+	}
+
+	DestroyBlock = Mix_LoadWAV(pathDestroyBlock);
+	if (DestroyBlock == NULL)
+	{
+		printf("Failed to load beat music! SDL_mixer Error: %s\n", Mix_GetError());
+	}
+
+	Lose = Mix_LoadWAV(pathLose);
+	if (DestroyBlock == NULL)
+	{
+		printf("Failed to load beat music! SDL_mixer Error: %s\n", Mix_GetError());
+	}
 }
 
 Ball::~Ball()
@@ -85,10 +108,12 @@ void Ball::update(float x_platform, float y_platform, int sWidth, int sHeight, b
 			{
 				speedBall += speedBall * 0.1;
 				dx *= -1;
+				Mix_PlayChannel(-1, Wall, 0);
 			}
 
 			if (y - height / 2 < 0)
 			{
+				Mix_PlayChannel(-1, Wall, 0);
 				speedBall += speedBall * 0.1;
 				dy *= -1;
 			}
@@ -96,6 +121,7 @@ void Ball::update(float x_platform, float y_platform, int sWidth, int sHeight, b
 			if (activeRedLine and y + height / 2 > sHeight - 30)
 			{
 				dy *= -1;
+				Mix_PlayChannel(-1, Wall , 0);
 			}
 
 		#pragma endregion
@@ -116,6 +142,7 @@ void Ball::update(float x_platform, float y_platform, int sWidth, int sHeight, b
 			{
 				if (countBall == 1)
 				{
+					Mix_PlayChannel(-1, Lose, 0);
 					fall = true;
 					startSet(*this);
 				}
@@ -145,7 +172,6 @@ void Ball::poolEvent(SDL_Event& event)
 	}
 }
 
-
 bool Ball::CheckCollision(float x_, float y_, int width_, int height_) const
 {
 	
@@ -165,6 +191,7 @@ bool Ball::CheckSideCollision(float x_, float y_, int width_, int height_)
 		{
 			reverseDirectionX();
 			timer.start();
+			Mix_PlayChannel(-1, DestroyBlock, 0);
 			return true;
 		}
 
@@ -173,6 +200,7 @@ bool Ball::CheckSideCollision(float x_, float y_, int width_, int height_)
 		{
 			reverseDirectionX();
 			timer.start();
+			Mix_PlayChannel(-1, DestroyBlock, 0);
 			return true;
 		}
 	}
@@ -187,7 +215,7 @@ bool Ball::CheckEdgeCollision(float x_, float y_, int width_, int height_) {
 		if (dy > 0 && y + width / 2 >= y_ - height_ / 2 && y - width / 2 < y_ - height_ / 2)
 		{
 			reverseDirectionY();
-			
+			Mix_PlayChannel(-1, DestroyBlock, 0);
 			return true;
 		}
 
@@ -195,7 +223,7 @@ bool Ball::CheckEdgeCollision(float x_, float y_, int width_, int height_) {
 		if (dy < 0 && y - width / 2 <= y_ + height_ / 2 && y + width / 2 > y_ + height_ / 2)
 		{
 			reverseDirectionY();
-			
+			Mix_PlayChannel(-1, DestroyBlock, 0);
 			return true;
 		}
 	}
